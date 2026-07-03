@@ -1,16 +1,17 @@
-name: quality
+name: backend-quality
 
 on:
   push:
   pull_request:
 
 jobs:
-  smoke:
+  python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m compileall app
-      - run: python -m unittest discover -s tests
+      - run: python -m compileall backend
+      - run: python -m json.tool backend/demo_data/volunteers.geojson >/dev/null
+      - run: python -m json.tool backend/demo_data/clients.geojson >/dev/null

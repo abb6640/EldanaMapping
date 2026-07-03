@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eldana | Bridging Disparities in Senior Volunteerism & Accessibility</title>
+    
+    <!-- Google Font: Libre Baskerville -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Leaflet.js for Satellite Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* MANDATORY RULE: Libre Baskerville with strictly NO bolding anywhere */
+        *, html, body, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, select, textarea, label, li, strong, b, th, td {
+            font-family: 'Libre Baskerville', serif !important;
+            font-weight: 400 !important;
+        }
+
+        /* Dynamic Shifting Gradient for Non-Home Pages */
+        .shifting-bg {
+            background: linear-gradient(-45deg, #fdfbf7, #6bce1a, #f7f4ee, #f0fdf4, #f3eee6);
+            background-size: 400% 400%;
+            animation: shiftGradient 12s ease infinite;
+        }
+
+        @keyframes shiftGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Interactive Hover Glow Effect */
+        .glow-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 22px rgba(132, 204, 22, 0.55);
+            transform: translateY(-3px);
+        }
+
+        .glow-btn {
+            transition: all 0.3s ease;
+        }
+        .glow-btn:hover {
+            box-shadow: 0 0 16px rgba(132, 204, 22, 0.65);
+            transform: scale(1.02);
+        }
+
+        /* Continuous Marquee Ticker */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 24s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Smooth tab transitions */
+        .tab-btn.active {
+            border-bottom: 2px solid #84cc16;
+            color: #4d7c0f;
+            background-color: #f7fee7;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fdfbf7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a3e635;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #65a30d;
+        }
+    </style>
+</head>
+<body class="bg-[#fdfbf7] text-stone-800 min-h-screen flex flex-col justify-between antialiased selection:bg-lime-200 selection:text-lime-900">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-lime-200/60 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Top Left: Logo / Website Name -->
+                <div class="flex-shrink-0 flex items-center">
+                    <button onclick="navigateTo('home')" class="text-3xl text-lime-700 hover:text-lime-600 transition-colors tracking-tight focus:outline-none">
+                        Eldana
+                    </button>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <div class="hidden xl:flex space-x-1 items-center">
+                    <button onclick="navigateTo('home')" class="nav-link px-3 py-2 text-stone-700 hover:text-lime-700 rounded-md hover:bg-lime-50 transition-colors">Home</button>
+                    <button onclick="navigateTo('about')" class="nav-link px-3 py-2 text-stone-700 hover:text-lime-700 rounded-md hover:bg-lime-50 transition-colors">About Us</button>
+                    <button onclick="navigateTo('donate')" class="nav-link px-3 py-2 text-stone-700 hover:text-lime-700 rounded-md hover:bg-lime-50 transition-colors">Donate</button>
+                    <button onclick="navigateTo('staff')" class="nav-link px-3 py-2 text-stone-700 hover:text-lime-700 rounded-md hover:bg-lime-50 transition-colors">Staff</button>
+                    <button onclick="navigateTo('map')" class="nav-link px-3 py-2 text-stone-700 hover:text-lime-700 rounded-md hover:bg-lime-50 transition-colors">Interactive Map</button>
+                    <button onclick="navigateTo('volunteer')" class="nav-link px-3 py-2 text-stone-700 hover:text-lime-700 rounded-md hover:bg-lime-50 transition-colors">Volunteer</button>
+                    <button onclick="navigateTo('client')" class="nav-link px-3 py-2 text-stone-700 hover:text-lime-700 rounded-md hover:bg-lime-50 transition-colors">Client</button>
+                    <button onclick="navigateTo('contact')" class="nav-link px-3 py-2 text-stone-700 hover:text-lime-700 rounded-md hover:bg-lime-50 transition-colors">Contact Us</button>
+                </div>
+
+                <!-- Top Right: Book Now CTA Button -->
+                <div class="hidden sm:flex items-center">
+                    <button onclick="navigateTo('calendar')" class="glow-btn bg-lime-500 hover:bg-lime-600 text-white px-6 py-2.5 rounded-full shadow-md text-sm tracking-wide transition-all duration-300 flex items-center border border-lime-400">
+                        Book Now
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="xl:hidden flex items-center">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-md text-stone-600 hover:text-lime-700 hover:bg-lime-100/50 focus:outline-none">
+                        <img src="m.png" alt="Menu Icon" class="w-6 h-6 object-contain" />
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Dropdown -->
+        <div id="mobile-menu" class="hidden xl:hidden bg-white/95 border-b border-lime-200 px-4 pt-2 pb-6 space-y-2 shadow-lg">
+            <button onclick="navigateTo('home')" class="block w-full text-left px-3 py-2 text-stone-700 hover:bg-lime-50 rounded-md">Home</button>
+            <button onclick="navigateTo('about')" class="block w-full text-left px-3 py-2 text-stone-700 hover:bg-lime-50 rounded-md">About Us</button>
+            <button onclick="navigateTo('donate')" class="block w-full text-left px-3 py-2 text-stone-700 hover:bg-lime-50 rounded-md">Donate</button>
+            <button onclick="navigateTo('staff')" class="block w-full text-left px-3 py-2 text-stone-700 hover:bg-lime-50 rounded-md">Staff</button>
+            <button onclick="navigateTo('map')" class="block w-full text-left px-3 py-2 text-stone-700 hover:bg-lime-50 rounded-md">Interactive Map</button>
+            <button onclick="navigateTo('volunteer')" class="block w-full text-left px-3 py-2 text-stone-700 hover:bg-lime-50 rounded-md">Volunteer</button>
+            <button onclick="navigateTo('client')" class="block w-full text-left px-3 py-2 text-stone-700 hover:bg-lime-50 rounded-md">Client</button>
+            <button onclick="navigateTo('contact')" class="block w-full text-left px-3 py-2 text-stone-700 hover:bg-lime-50 rounded-md">Contact Us</button>
+            <button onclick="navigateTo('calendar')" class="w-full mt-3 bg-lime-500 text-white px-4 py-2.5 rounded-full text-center block shadow hover:bg-lime-600">
+                Book Now
+            </button>
+        </div>
+    </nav>
+
+    <main id="main-content" class="flex-grow">
+        
+        <!-- PAGE 1: HOME PAGE -->
+        <section id="page-home" class="page-view space-y-16 pb-16">
+            
+            <!-- Hero Frame Container -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+                <div class="relative bg-gradient-to-br from-lime-100/80 via-white to-stone-100 rounded-3xl p-8 md:p-16 border border-lime-200/80 shadow-lg overflow-hidden">
+                    
+                    <!-- Top Left Large Text -->
+                    <div class="mb-4">
+                        <h1 class="text-5xl md:text-7xl text-lime-800 tracking-tight mb-2">Eldana</h1>
+                        
+                        <!-- Marquee / Cycling Line -->
+                        <div class="marquee-container py-2 border-y border-lime-300/60 my-4 bg-lime-50/60 rounded-lg">
+                            <div class="marquee-content text-xl md:text-2xl text-lime-700 tracking-wide">
+                                Eldana | Eldana | Eldana | Eldana | Eldana | Eldana | Eldana | Eldana | Eldana | Eldana | Eldana | Eldana |&nbsp;
+                            </div>
+                        </div>
+
+                        <!-- Subheading -->
+                        <p class="text-xl md:text-2xl text-stone-700 mt-4 max-w-2xl leading-relaxed">
+                            Providing personalized and accessible care.
+                        </p>
+                    </div>
+
+                    <!-- Hero Image -->
+                    <div class="mt-8 relative h-90 md:h-120 rounded-2xl bg-stone-200/70 overflow-hidden border border-lime-200 flex items-center justify-center shadow-inner group">
+                        <img src="happy-nurse-take-care-elderly-man-wheelchair-garden-nursing-home.jpg" alt="Community Senior Care" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Block 1: Partner Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <style>
+                    @keyframes shiftConcentricBlue {
+                        0% { background-size: 100% 100%; }
+                        50% { background-size: 220% 220%; }
+                        100% { background-size: 100% 100%; }
+                    }
+                    .shifting-blue-beige {
+                        background: radial-gradient(circle at center, #38bdf8 0%, #e0f2fe 30%, #fef9ed 65%, #f5efe6 100%);
+                        background-position: center;
+                        background-size: 100% 100%;
+                        animation: shiftConcentricBlue 28s ease-in-out infinite;
+                    }
+                </style>
+                <div class="shifting-blue-beige rounded-3xl p-8 md:p-12 border border-stone-200 shadow-md flex flex-col md:flex-row items-center gap-8 glow-hover">
+                    
+                    <!-- Circle Image -->
+                    <div class="w-80 h-80 rounded-full border-2 border-lime-400 flex-shrink-0 flex items-center justify-center shadow-inner overflow-hidden relative group">
+                        <img src="unnamed.png" alt="Partner Logo" class="w-full h-full object-cover" />
+                    </div>
+
+                    <!-- Right Side Text & Button -->
+                    <div class="flex-1 text-center md:text-left space-y-4">
+                        <h2 class="text-3xl text-stone-800">Visit Our Research Division</h2>
+                        <p class="text-stone-600 leading-relaxed">
+                            Eldana | Research is a platform dedicated to outlining human anatomy and serving as an informational center. Using a patented program, input medical imaging (MRIs, CT Scans) can be objectively segmented using statistics. Browse a library of resources, and interact with the on-site 3D brain map. 
+                        </p>
+                        <button onclick="openModal('partner-modal')" class="glow-btn bg-lime-500 hover:bg-lime-600 text-white px-6 py-2.5 rounded-xl transition-all shadow">
+                            Visit Eldana | Research
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Block 2: Social Media Gallery Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-stone-50 rounded-3xl p-8 md:p-12 border border-stone-200 shadow-md text-center space-y-8">
+                    <h3 class="text-2xl text-stone-800">Community Moments & Highlights</h3>
+                    
+                    <!-- 4 Rounded Square Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="aspect-square bg-white rounded-2xl border border-lime-200 shadow-sm overflow-hidden glow-hover group cursor-pointer relative" >
+                            <img src="happy-nurse-take-care-elderly-man-wheelchair-garden-nursing-home.jpg" alt="Community Garden" class="w-full h-full object-cover" />
+                        </div>
+                        <div class="aspect-square bg-white rounded-2xl border border-lime-200 shadow-sm overflow-hidden glow-hover group cursor-pointer relative" >
+                            <img src="happy-nurse-holding-laughing-elderly-man-hand-wheelchair-garden-nursing-home.jpg" alt="Rides & Outings" class="w-full h-full object-cover" />
+                        </div>
+                        <div class="aspect-square bg-white rounded-2xl border border-lime-200 shadow-sm overflow-hidden glow-hover group cursor-pointer relative" >
+                            <img src="nurse-assist-elderly-senior-man-eat-breakfast-drink-coffee-with-mug-hand-nursing-home.jpg" alt="Tech Mentorship" class="w-full h-full object-cover" />
+                        </div>
+                        <div class="aspect-square bg-white rounded-2xl border border-lime-200 shadow-sm overflow-hidden glow-hover group cursor-pointer relative" >
+                            <img src="happy-nurse-holding-elderly-man-hands-with-blanket-bedroom-nursing-home.jpg" alt="Tea & Stories" class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+
+                    <!-- Button on bottom -->
+                    <div>
+                        <button onclick="showToast('Redirecting to official social media channels...')" class="glow-btn bg-stone-800 hover:bg-stone-900 text-white px-8 py-3 rounded-xl transition-all shadow-md">
+                            Follow us on social media
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Block 3: About Summary Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <style>
+                    @keyframes shiftConcentricLime {
+                        0% { background-size: 100% 100%; }
+                        50% { background-size: 220% 220%; }
+                        100% { background-size: 100% 100%; }
+                    }
+                    .shifting-lime-beige {
+                        background: radial-gradient(circle at center, #6bce1a 0%, #ecfccb 30%, #fef9ed 65%, #f5efe6 100%);
+                        background-position: center;
+                        background-size: 100% 100%;
+                        animation: shiftConcentricLime 28s ease-in-out infinite;
+                    }
+                </style>
+                <div class="shifting-lime-beige rounded-3xl p-8 md:p-12 border border-stone-200 shadow-md grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    
+                    <!-- Left Side: Text Elements -->
+                    <div class="space-y-6">
+                        <h2 class="text-4xl text-stone-800">About Us</h2>
+                        <p class="text-stone-600 leading-relaxed text-lg">
+                            Eldana was founded on the belief that aging should be accompanied by continuous dignity, connection, and full access to community life. We bridge systemic gaps in volunteer availability by creating localized, empathetic care networks that respect individual preferences and foster lasting relationships.
+                        </p>
+                        <div>
+                            <button onclick="navigateTo('about')" class="glow-btn bg-lime-500 hover:bg-lime-600 text-white px-7 py-3 rounded-xl transition-all shadow-md">
+                                Learn More About Us
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Single Square Image -->
+                    <div>
+                        <div class="aspect-square rounded-2xl bg-lime-50 border border-lime-200 flex items-center justify-center p-0 shadow-sm relative overflow-hidden group">
+                            <img src="happy-nurse-holding-laughing-elderly-man-hand-wheelchair-garden-nursing-home.jpg" alt="Intergenerational Eldana Volunteers" class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: ABOUT US -->
+        <section id="page-about" class="page-view hidden space-y-12 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            
+            <!-- Page Header Paragraph -->
+            <div class="bg-white/90 backdrop-blur-md rounded-3xl p-8 border border-lime-200/80 shadow-md space-y-4">
+                <h1 class="text-4xl text-lime-900">About Eldana</h1>
+                <p class="text-stone-700 text-lg leading-relaxed">
+                    Eldana is a non-profit dedicated to bridging disparities in senior volunteerism. By modernizing preference-matching, streamlining safety protocols, and eliminating geographic deserts in elderly care, we ensure every senior receives timely, compassionate assistance tailored to their unique routine.
+                </p>
+            </div>
+
+            <!-- Image Carousel Component -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 border border-stone-200 shadow-md space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl text-stone-800">Eldana In Action Gallery</h2>
+                    <span id="carousel-counter" class="text-sm bg-lime-100 text-lime-800 px-3 py-1 rounded-full border border-lime-300">
+                        Image 1 of 4
+                    </span>
+                </div>
+
+                <!-- Carousel Main Viewport -->
+                <div class="relative h-80 md:h-96 rounded-2xl bg-stone-100 border border-stone-200 overflow-hidden shadow-inner flex items-center justify-center">
+                    <div id="carousel-slide-content" class="w-full h-full flex items-center justify-center transition-opacity duration-500 relative z-10">
+                        <!-- Dynamic JS image slide template loaded here -->
+                    </div>
+
+                    <!-- Left & Right Navigation Controls -->
+                    <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-lime-500 hover:text-white text-stone-700 w-12 h-12 rounded-full border border-stone-200 flex items-center justify-center shadow transition-all focus:outline-none z-20">
+                        <img src="32213.png" alt="Previous" class="w-6 h-6 object-contain rotate-180" />
+                    </button>
+                    <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-lime-500 hover:text-white text-stone-700 w-12 h-12 rounded-full border border-stone-200 flex items-center justify-center shadow transition-all focus:outline-none z-20">
+                        <img src="32213.png" alt="Next" class="w-6 h-6 object-contain" />
+                    </button>
+                </div>
+
+                <!-- Carousel Controls & Indicators Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+                    <div id="carousel-dots" class="flex space-x-2">
+                        <!-- Dots populated via JS -->
+                    </div>
+
+                    <button id="autoplay-btn" onclick="toggleAutoplay()" class="text-xs bg-stone-100 hover:bg-lime-100 text-stone-700 px-4 py-2 rounded-lg border border-stone-300 flex items-center gap-2">
+                        <img src="pause.png" alt="Pause" class="w-4 h-4 object-contain" /> Auto-Play Active
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stacked Images Paired with Outlined Paragraph Blocks -->
+            <div class="space-y-8 bg-white/90 backdrop-blur-md rounded-3xl p-8 border border-lime-200/80 shadow-md">
+                
+    
+
+            <!-- Grid of Icons for Daily Tasks -->
+            <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-md space-y-6">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-3xl text-stone-800">Essential Daily Assistance Services</h2>
+                    <p class="text-stone-600 mt-2">Comprehensive support tailored to maintain independence and well-being.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Task 1 -->
+                    <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 hover:border-lime-400 glow-hover space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-lime-100 text-lime-800 flex items-center justify-center text-xl">
+                            
+                        </div>
+                        <h4 class="text-xl text-stone-800">Grocery & Supplies</h4>
+                        <p class="text-sm text-stone-600">Assistance with routine grocery shopping, pantry stocking, and essential household item deliveries.</p>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 hover:border-lime-400 glow-hover space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-lime-100 text-lime-800 flex items-center justify-center text-xl">
+                           
+                        </div>
+                        <h4 class="text-xl text-stone-800">Rides & Transportation</h4>
+                        <p class="text-sm text-stone-600">Safe escort to medical appointments, prescription pickup, religious services, and community centers.</p>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 hover:border-lime-400 glow-hover space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-lime-100 text-lime-800 flex items-center justify-center text-xl">
+                           
+                        </div>
+                        <h4 class="text-xl text-stone-800">Medication Reminders</h4>
+                        <p class="text-sm text-stone-600">Friendly check-in calls and in-person reminders to support daily wellness schedules.</p>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 hover:border-lime-400 glow-hover space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-lime-100 text-lime-800 flex items-center justify-center text-xl">
+                            
+                        </div>
+                        <h4 class="text-xl text-stone-800">Companionship & Reading</h4>
+                        <p class="text-sm text-stone-600">Engaging visits, shared reading sessions, board games, and therapeutic conversations.</p>
+                    </div>
+
+                    <!-- Task 5 -->
+                    <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 hover:border-lime-400 glow-hover space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-lime-100 text-lime-800 flex items-center justify-center text-xl">
+                            
+                        </div>
+                        <h4 class="text-xl text-stone-800">Tech Support</h4>
+                        <p class="text-sm text-stone-600">Patient instruction on smartphones, video calling loved ones, and telehealth navigation.</p>
+                    </div>
+
+                    <!-- Task 6 -->
+                    <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 hover:border-lime-400 glow-hover space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-lime-100 text-lime-800 flex items-center justify-center text-xl">
+                            
+                        </div>
+                        <h4 class="text-xl text-stone-800">Light Home Prep</h4>
+                        <p class="text-sm text-stone-600">Light housekeeping, plant care, organizing mail, and maintaining tidy living spaces.</p>
+                    </div>
+
+                    <!-- Task 7 -->
+                    <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 hover:border-lime-400 glow-hover space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-lime-100 text-lime-800 flex items-center justify-center text-xl">
+                            
+                        </div>
+                        <h4 class="text-xl text-stone-800">Mobility Aid Escort</h4>
+                        <p class="text-sm text-stone-600">Attentive assistance during neighborhood walks, yard strolls, and outdoor exercises.</p>
+                    </div>
+
+                    <!-- Task 8 -->
+                    <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 hover:border-lime-400 glow-hover space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-lime-100 text-lime-800 flex items-center justify-center text-xl">
+                          
+                        </div>
+                        <h4 class="text-xl text-stone-800">Meal Preparation</h4>
+                        <p class="text-sm text-stone-600">Collaborative prep of nutritious meals aligned with dietary guidelines and tastes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 3: DONATE PAGE -->
+        <section id="page-donate" class="page-view hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Side: Interactive Donation Dashboard -->
+                <div class="lg:col-span-7 bg-white/95 backdrop-blur-md rounded-3xl p-8 border border-lime-200/90 shadow-lg space-y-6">
+                    <div>
+                        <h1 class="text-4xl text-lime-900">Eldana Donation Dashboard</h1>
+                        <p class="text-stone-600 mt-2">Empower local senior support networks and fund essential accessibility rides.</p>
+                    </div>
+
+                    <!-- Frequency Selector -->
+                    <div class="flex rounded-xl bg-stone-100 p-1 border border-stone-200">
+                        <button id="freq-once" onclick="setDonationFreq('once')" class="flex-1 py-2 rounded-lg text-sm transition-all bg-white shadow-sm text-stone-800">
+                            One-Time Donation
+                        </button>
+                        <button id="freq-monthly" onclick="setDonationFreq('monthly')" class="flex-1 py-2 rounded-lg text-sm transition-all text-stone-600 hover:text-stone-800">
+                            Monthly Supporter
+                        </button>
+                    </div>
+
+                    <!-- Preset Amount Selector -->
+                    <div>
+                        <label class="block text-sm text-stone-700 mb-2">Select Donation Amount</label>
+                        <div class="grid grid-cols-4 gap-3">
+                            <button onclick="setDonationAmount(10)" class="amount-btn bg-stone-50 hover:bg-lime-100 border border-stone-200 py-3 rounded-xl text-center text-stone-800 transition-all focus:border-lime-500">$10</button>
+                            <button onclick="setDonationAmount(25)" class="amount-btn bg-stone-50 hover:bg-lime-100 border border-stone-200 py-3 rounded-xl text-center text-stone-800 transition-all focus:border-lime-500">$25</button>
+                            <button onclick="setDonationAmount(50)" class="amount-btn bg-lime-500 text-white border border-lime-600 py-3 rounded-xl text-center transition-all shadow">$50</button>
+                            <button onclick="setDonationAmount(100)" class="amount-btn bg-stone-50 hover:bg-lime-100 border border-stone-200 py-3 rounded-xl text-center text-stone-800 transition-all focus:border-lime-500">$100</button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Input Field -->
+                    <div>
+                        <label class="block text-sm text-stone-700 mb-1">Custom Amount ($ USD)</label>
+                        <input id="custom-donation" type="number" value="50" min="5" oninput="updateDonationTotal()" class="w-full px-4 py-3 rounded-xl border border-stone-300 focus:outline-none focus:border-lime-500 bg-stone-50">
+                    </div>
+
+                    <!-- Community Impact Calculator Widget -->
+                    <div class="bg-lime-50 rounded-2xl p-5 border border-lime-200 space-y-2">
+                        <div class="flex items-center justify-between text-sm text-lime-900">
+                            <span>Direct Impact Estimate:</span>
+                            <span id="impact-label" class="text-lime-800">5 Grocery Delivery Rides & 2 Companion Hours</span>
+                        </div>
+                        <div class="w-full bg-lime-200 rounded-full h-2 overflow-hidden">
+                            <div id="impact-bar" class="bg-lime-600 h-full transition-all duration-500" style="width: 65%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Donor Info Form -->
+                    <div class="space-y-4 pt-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-stone-600 mb-1">Full Name</label>
+                                <input type="text" placeholder="Jane Doe" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-lime-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-stone-600 mb-1">Email Address</label>
+                                <input type="email" placeholder="jane@example.com" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-lime-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-stone-600 mb-1">Payment Method</label>
+                            <select class="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-lime-500">
+                                <option>Credit / Debit Card</option>
+                                <option>Bank Transfer (ACH)</option>
+                                <option>Digital Wallet</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button onclick="processDonation()" class="w-full glow-btn bg-lime-500 hover:bg-lime-600 text-white py-3.5 rounded-xl text-lg transition-all shadow-md flex items-center justify-center gap-2">
+                        <span>Process <span id="btn-donation-amount">$50.00</span> Donation</span>
+                    </button>
+                </div>
+
+                <!-- Right Side: Image & Impact Overview -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="h-84 rounded-3xl bg-lime-100/70 border border-lime-300 flex items-center justify-center p-0 shadow-sm overflow-hidden relative group">
+                        <img src="happy-nurse-holding-laughing-elderly-man-hand-wheelchair-garden-nursing-home.jpg" alt="Donation Impact Image" class="w-full h-full object-cover" />
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 border border-stone-200 shadow-md space-y-4">
+                        <h3 class="text-xl text-stone-800">Where Your Contribution Goes</h3>
+                        <ul class="space-y-3 text-stone-600 text-sm">
+                            <li class="flex items-start gap-2">
+                                <img src="gs.png" alt="bullet" class="w-4 h-4 mt-1 flex-shrink-0 object-contain" />
+                                <span><strong>85% Direct Senior Support:</strong> Fuel stipends, medical escort logistics, and accessibility kits.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <img src="gs.png" alt="bullet" class="w-4 h-4 mt-1 flex-shrink-0 object-contain" />
+                                <span><strong>10% Volunteer Training:</strong> Safety vetting, specialized elder care seminars, and CPR certifications.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <img src="gs.png" alt="bullet" class="w-4 h-4 mt-1 flex-shrink-0 object-contain" />
+                                <span><strong>5% Community Operations:</strong> Regional platform outreach and 24/7 client dispatch.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: STAFF PAGE -->
+        <section id="page-staff" class="page-view hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
+            
+            <!-- Staff Title & Underline -->
+            <div class="text-center space-y-2">
+                <h1 class="text-4xl text-stone-800 tracking-wide">Eldana Staff Titles & Leadership</h1>
+                <div class="w-32 h-1 bg-lime-500 mx-auto rounded-full"></div>
+                <p class="text-stone-600 max-w-xl mx-auto pt-2">Dedicated professionals committed to eliminating disparities in volunteer senior care.</p>
+            </div>
+
+            <!-- Grid of Staff Members -->
+            <div id="staff-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </section>
+
+        <!-- PAGE 5: INTERACTIVE MAP PAGE -->
+        <section id="page-map" class="page-view hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+            
+            <div class="bg-white/90 backdrop-blur-md rounded-3xl p-8 border border-lime-200/80 shadow-md space-y-4">
+                <h1 class="text-4xl text-lime-900">Interactive Map</h1>
+                <p class="text-stone-700 text-lg leading-relaxed">
+                    Locate participating volunteers, clientele, and regional Eldana chapters. Click on any active marker to inspect availability, ongoing assistance requests, and community hubs.
+                </p>
+                
+                <!-- Map Layer Toggle Buttons -->
+                <div class="flex flex-wrap items-center gap-4 pt-2">
+                    <label class="flex items-center gap-2 cursor-pointer text-sm text-stone-700 bg-lime-50 px-3 py-1.5 rounded-lg border border-lime-300">
+                        <input type="checkbox" id="toggle-volunteers" checked onchange="updateMapMarkers()" class="accent-lime-600">
+                        <span class="w-3 h-3 rounded-full bg-lime-500 inline-block"></span>
+                        Volunteers (Lime)
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-sm text-stone-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-300">
+                        <input type="checkbox" id="toggle-clients" checked onchange="updateMapMarkers()" class="accent-amber-600">
+                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                        Clientele (Warm Amber)
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-sm text-stone-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-300">
+                        <input type="checkbox" id="toggle-chapters" checked onchange="updateMapMarkers()" class="accent-emerald-700">
+                        <span class="w-3 h-3 rounded-full bg-emerald-800 inline-block"></span>
+                        Regional Chapters (Forest Green)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Leaflet Satellite Map Frame -->
+            <div class="bg-white rounded-3xl p-4 border border-stone-200 shadow-xl overflow-hidden">
+                <div id="leaflet-map" class="w-full h-[550px] rounded-2xl z-10"></div>
+            </div>
+        </section>
+
+        <!-- PAGE 6: VOLUNTEER PAGE -->
+        <section id="page-volunteer" class="page-view hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+            
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-8 border border-lime-200 shadow-md flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-4xl text-lime-900">Volunteer Portal</h1>
+                    <p class="text-stone-600 mt-1">Manage your commitments, track service metrics, and update preferences.</p>
+                </div>
+                <button onclick="generateCertificate()" class="glow-btn bg-lime-500 hover:bg-lime-600 text-white px-6 py-3 rounded-xl shadow-md flex items-center gap-2">
+                    Generate Certificate
+                </button>
+            </div>
+
+            <!-- Volunteer Sub-Navigation Tabs -->
+            <div class="flex border-b border-stone-300 space-x-2 bg-white/60 p-2 rounded-2xl">
+                <button onclick="switchVolTab('metrics')" id="vol-tab-metrics" class="tab-btn active px-6 py-3 rounded-xl text-stone-700 transition-all">
+                    Dashboard & Metrics
+                </button>
+                <button onclick="switchVolTab('prefs')" id="vol-tab-prefs" class="tab-btn px-6 py-3 rounded-xl text-stone-700 transition-all">
+                    Preferences & Needs
+                </button>
+                <button onclick="switchVolTab('history')" id="vol-tab-history" class="tab-btn px-6 py-3 rounded-xl text-stone-700 transition-all">
+                    Appointment History
+                </button>
+            </div>
+
+            <!-- TAB 1: METRICS DASHBOARD -->
+            <div id="vol-sub-metrics" class="vol-subpage space-y-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Metric Card 1 -->
+                    <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm glow-hover space-y-2">
+                        <div class="text-stone-500 text-sm flex items-center justify-between">
+                            <span>Hours Volunteered</span>
+                        </div>
+                        <div class="text-4xl text-stone-800">142 <span class="text-lg text-stone-500">hrs</span></div>
+                        <div class="text-xs text-lime-700">+12 hrs this month</div>
+                    </div>
+
+                    <!-- Metric Card 2 -->
+                    <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm glow-hover space-y-2">
+                        <div class="text-stone-500 text-sm flex items-center justify-between">
+                            <span>Miles Traveled</span>
+                        </div>
+                        <div class="text-4xl text-stone-800">385 <span class="text-lg text-stone-500">mi</span></div>
+                        <div class="text-xs text-lime-700">Reimbursed fuel program</div>
+                    </div>
+
+                    <!-- Metric Card 3 -->
+                    <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm glow-hover space-y-2">
+                        <div class="text-stone-500 text-sm flex items-center justify-between">
+                            <span>Appointments Handled</span>
+                        </div>
+                        <div class="text-4xl text-stone-800">28 <span class="text-lg text-stone-500">tasks</span></div>
+                        <div class="text-xs text-lime-700">100% client satisfaction</div>
+                    </div>
+
+                    <!-- Metric Card 4 -->
+                    <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm glow-hover space-y-2">
+                        <div class="text-stone-500 text-sm flex items-center justify-between">
+                            <span>Active Radius</span>
+                        </div>
+                        <div class="text-4xl text-stone-800">15 <span class="text-lg text-stone-500">mi</span></div>
+                        <div class="text-xs text-lime-700">Philadelphia Metro</div>
+                    </div>
+                </div>
+
+                <!-- Task Breakdown Box -->
+                <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-md grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4">
+                        <h3 class="text-2xl text-stone-800">Task Distribution Breakdown</h3>
+                        <p class="text-stone-600">Overview of completed volunteer sessions categorized by client need.</p>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs text-stone-600 mb-1">
+                                    <span>Rides & Escorts (35%)</span>
+                                    <span>10 sessions</span>
+                                </div>
+                                <div class="w-full bg-stone-100 rounded-full h-2.5">
+                                    <div class="bg-lime-600 h-2.5 rounded-full" style="width: 35%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-stone-600 mb-1">
+                                    <span>Grocery & Pantry (25%)</span>
+                                    <span>7 sessions</span>
+                                </div>
+                                <div class="w-full bg-stone-100 rounded-full h-2.5">
+                                    <div class="bg-lime-400 h-2.5 rounded-full" style="width: 25%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-stone-600 mb-1">
+                                    <span>Companionship & Reading (20%)</span>
+                                    <span>6 sessions</span>
+                                </div>
+                                <div class="w-full bg-stone-100 rounded-full h-2.5">
+                                    <div class="bg-stone-600 h-2.5 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-stone-600 mb-1">
+                                    <span>Tech Mentorship & Admin (20%)</span>
+                                    <span>5 sessions</span>
+                                </div>
+                                <div class="w-full bg-stone-100 rounded-full h-2.5">
+                                    <div class="bg-amber-500 h-2.5 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual SVG Pie Representation -->
+                    <div class="flex items-center justify-center p-4">
+                        <div class="w-64 h-64 relative">
+                            <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+                                <path stroke-dasharray="35, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#65a30d" stroke-width="3.8" />
+                                <path stroke-dasharray="25, 100" stroke-dashoffset="-35" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#a3e635" stroke-width="3.8" />
+                                <path stroke-dasharray="20, 100" stroke-dashoffset="-60" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#44403c" stroke-width="3.8" />
+                                <path stroke-dasharray="20, 100" stroke-dashoffset="-80" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f59e0b" stroke-width="3.8" />
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                <span class="text-2xl text-stone-800">28</span>
+                                <span class="text-xs text-stone-500">Total Tasks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: PREFERENCES & NEEDS -->
+            <div id="vol-sub-prefs" class="vol-subpage hidden bg-white rounded-3xl p-8 border border-stone-200 shadow-md space-y-6">
+                <h3 class="text-2xl text-stone-800">Volunteer Preferences & Service Needs</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs text-stone-600 mb-1">Preferred Task Categories</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 text-stone-700 text-sm"><input type="checkbox" checked class="accent-lime-600"> Transportation & Rides</label>
+                            <label class="flex items-center gap-2 text-stone-700 text-sm"><input type="checkbox" checked class="accent-lime-600"> Grocery Shopping</label>
+                            <label class="flex items-center gap-2 text-stone-700 text-sm"><input type="checkbox" checked class="accent-lime-600"> Companionship & Reading</label>
+                            <label class="flex items-center gap-2 text-stone-700 text-sm"><input type="checkbox" class="accent-lime-600"> Meal Preparation</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-stone-600 mb-1">Max Travel Distance (Miles)</label>
+                        <input type="range" min="1" max="50" value="15" class="w-full accent-lime-600">
+                        <div class="text-xs text-stone-500 mt-1">15 miles around Philadelphia</div>
+                    </div>
+                </div>
+                <button onclick="showToast('Volunteer preferences saved successfully!')" class="glow-btn bg-lime-500 text-white px-6 py-2.5 rounded-xl shadow">
+                    Save Preferences
+                </button>
+            </div>
+
+            <!-- TAB 3: APPOINTMENT HISTORY -->
+            <div id="vol-sub-history" class="vol-subpage hidden bg-white rounded-3xl p-8 border border-stone-200 shadow-md space-y-4">
+                <h3 class="text-2xl text-stone-800">Volunteer Appointment Log</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-stone-700 text-sm border-collapse">
+                        <thead>
+                            <tr class="border-b border-stone-200 bg-stone-50 text-stone-600">
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Client</th>
+                                <th class="p-3">Service</th>
+                                <th class="p-3">Duration</th>
+                                <th class="p-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-100">
+                            <tr>
+                                <td class="p-3">Oct 02, 2026</td>
+                                <td class="p-3">Eleanor Vance</td>
+                                <td class="p-3">Medical Escort</td>
+                                <td class="p-3">2.5 hrs</td>
+                                <td class="p-3"><span class="bg-lime-100 text-lime-800 px-2 py-0.5 rounded text-xs">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3">Sep 28, 2026</td>
+                                <td class="p-3">Arthur Pendelton</td>
+                                <td class="p-3">Grocery Assistance</td>
+                                <td class="p-3">1.5 hrs</td>
+                                <td class="p-3"><span class="bg-lime-100 text-lime-800 px-2 py-0.5 rounded text-xs">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3">Oct 12, 2026</td>
+                                <td class="p-3">Clara Higgins</td>
+                                <td class="p-3">Tech Mentorship</td>
+                                <td class="p-3">2.0 hrs</td>
+                                <td class="p-3"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-xs">Upcoming</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 7: CLIENT PAGE -->
+        <section id="page-client" class="page-view hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+            
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-8 border border-lime-200 shadow-md">
+                <h1 class="text-4xl text-lime-900">Client Accessibility Portal</h1>
+                <p class="text-stone-600 mt-1">Manage personal care requests, scheduling preferences, and visit history.</p>
+            </div>
+
+            <!-- Client Sub-Navigation Tabs -->
+            <div class="flex border-b border-stone-300 space-x-2 bg-white/60 p-2 rounded-2xl">
+                <button onclick="switchClientTab('overview')" id="client-tab-overview" class="tab-btn active px-6 py-3 rounded-xl text-stone-700 transition-all">
+                    Client Overview
+                </button>
+                <button onclick="switchClientTab('prefs')" id="client-tab-prefs" class="tab-btn px-6 py-3 rounded-xl text-stone-700 transition-all">
+                    Preferences & Needs
+                </button>
+                <button onclick="switchClientTab('history')" id="client-tab-history" class="tab-btn px-6 py-3 rounded-xl text-stone-700 transition-all">
+                    Appointment History
+                </button>
+            </div>
+
+            <!-- CLIENT SUBPAGE 1: OVERVIEW -->
+            <div id="client-sub-overview" class="client-subpage space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm space-y-2">
+                        <div class="text-xs text-stone-500">Next Scheduled Visit</div>
+                        <div class="text-2xl text-stone-800">Thursday, Oct 08</div>
+                        <div class="text-xs text-lime-700">Volunteer: Marcus Vance (Grocery & Pantry)</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm space-y-2">
+                        <div class="text-xs text-stone-500">Primary Care Coordinator</div>
+                        <div class="text-2xl text-stone-800">Sarah Jenkins, MSW</div>
+                        <div class="text-xs text-lime-700">Direct Line: (215) 555-0182</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm space-y-2">
+                        <div class="text-xs text-stone-500">Emergency Support Line</div>
+                        <div class="text-2xl text-stone-800">24/7 Helpline</div>
+                        <div class="text-xs text-lime-700">1-800-ELDANA-CARE</div>
+                    </div>
+                </div>
+
+                <div class="bg-lime-50 rounded-3xl p-8 border border-lime-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <h3 class="text-2xl text-lime-900">Need Immediate Assistance?</h3>
+                        <p class="text-stone-600 text-sm mt-1">Request a volunteer escort or prescription pickup for tomorrow.</p>
+                    </div>
+                    <button onclick="navigateTo('calendar')" class="glow-btn bg-lime-500 text-white px-6 py-3 rounded-xl shadow">
+                        Book Assistance
+                    </button>
+                </div>
+            </div>
+
+            <!-- CLIENT SUBPAGE 2: PREFERENCES & NEEDS -->
+            <div id="client-sub-prefs" class="client-subpage hidden bg-white rounded-3xl p-8 border border-stone-200 shadow-md space-y-6">
+                <h3 class="text-2xl text-stone-800">Mobility & Care Preferences</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs text-stone-600 mb-1">Mobility Requirements</label>
+                        <select class="w-full p-3 rounded-xl border border-stone-300 bg-stone-50 text-stone-700">
+                            <option>Wheelchair Accessible Vehicle Needed</option>
+                            <option>Walker / Cane Assistance</option>
+                            <option>No Mobility Aids Required</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-stone-600 mb-1">Preferred Support Language</label>
+                        <select class="w-full p-3 rounded-xl border border-stone-300 bg-stone-50 text-stone-700">
+                            <option>English</option>
+                            <option>Spanish</option>
+                            <option>Mandarin</option>
+                            <option>American Sign Language (ASL)</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="showToast('Client care preferences updated!')" class="glow-btn bg-lime-500 text-white px-6 py-2.5 rounded-xl shadow">
+                    Update Preferences
+                </button>
+            </div>
+
+            <!-- CLIENT SUBPAGE 3: APPOINTMENT HISTORY -->
+            <div id="client-sub-history" class="client-subpage hidden bg-white rounded-3xl p-8 border border-stone-200 shadow-md space-y-4">
+                <h3 class="text-2xl text-stone-800">Your Past Assistance Log</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-stone-700 text-sm border-collapse">
+                        <thead>
+                            <tr class="border-b border-stone-200 bg-stone-50 text-stone-600">
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Volunteer</th>
+                                <th class="p-3">Task Provided</th>
+                                <th class="p-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-100">
+                            <tr>
+                                <td class="p-3">Sep 30, 2026</td>
+                                <td class="p-3">David Chen</td>
+                                <td class="p-3">Doctor Appointment Transportation</td>
+                                <td class="p-3"><button onclick="showToast('Re-booking request sent!')" class="text-xs text-lime-700 hover:underline">Request Again</button></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3">Sep 15, 2026</td>
+                                <td class="p-3">Maria Santos</td>
+                                <td class="p-3">Prescription Pickup</td>
+                                <td class="p-3"><button onclick="showToast('Re-booking request sent!')" class="text-xs text-lime-700 hover:underline">Request Again</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 8: CONTACT US PAGE -->
+        <section id="page-contact" class="page-view hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Side: Contact Form -->
+                <div class="lg:col-span-7 bg-white/95 backdrop-blur-md rounded-3xl p-8 border border-lime-200 shadow-lg space-y-6">
+                    <div>
+                        <h1 class="text-4xl text-lime-900">Get in Touch</h1>
+                        <p class="text-stone-600 mt-2">Have questions about joining as a volunteer, registering a client, or donating?</p>
+                    </div>
+
+                    <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-stone-600 mb-1">Your Full Name</label>
+                                <input required type="text" placeholder="First & Last Name" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-stone-50 focus:outline-none focus:border-lime-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-stone-600 mb-1">Your Email</label>
+                                <input required type="email" placeholder="name@domain.com" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-stone-50 focus:outline-none focus:border-lime-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-stone-600 mb-1">I am contacting as a...</label>
+                            <select class="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-stone-50 focus:outline-none focus:border-lime-500">
+                                <option>Prospective Volunteer</option>
+                                <option>Client or Caregiver</option>
+                                <option>Partnering Organization</option>
+                                <option>Donor or Sponsor</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-stone-600 mb-1">Subject</label>
+                            <input required type="text" placeholder="How can we assist you?" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-stone-50 focus:outline-none focus:border-lime-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-stone-600 mb-1">Detailed Message</label>
+                            <textarea required rows="4" placeholder="Please write your inquiry here..." class="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-stone-50 focus:outline-none focus:border-lime-500"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full glow-btn bg-lime-500 hover:bg-lime-600 text-white py-3 rounded-xl transition-all shadow-md">
+                            Send Message to Eldana
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right Side: Sidebar Details -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-8 border border-stone-200 shadow-md space-y-6">
+                    <h3 class="text-2xl text-stone-800">Eldana Headquarters</h3>
+                    
+                    <div class="space-y-4 text-stone-600 text-sm">
+                        <div class="flex items-start gap-3">
+                            <img src="gs.png" alt="bullet" class="w-4 h-4 mt-1 flex-shrink-0 object-contain" />
+                            <div>
+                                <strong>Location</strong><br>
+                                5575 Merivale Court,<br>
+                                Harrisburg, PA 17112
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <img src="gs.png" alt="bullet" class="w-4 h-4 mt-1 flex-shrink-0 object-contain" />
+                            <div>
+                                <strong>Phone & Hotline</strong><br>
+                                Direct: (215) 555-ELDN (3536)<br>
+                                Toll Free: 1-800-555-CARE
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <img src="gs.png" alt="bullet" class="w-4 h-4 mt-1 flex-shrink-0 object-contain" />
+                            <div>
+                                <strong>Email Support</strong><br>
+                                support@eldana.org<br>
+                                volunteer@eldana.org
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <img src="gs.png" alt="bullet" class="w-4 h-4 mt-1 flex-shrink-0 object-contain" />
+                            <div>
+                                <strong>Office Hours</strong><br>
+                                Monday – Friday: 8:00 AM – 6:00 PM EST<br>
+                                Saturday: 9:00 AM – 2:00 PM EST<br>
+                                <span class="text-xs text-lime-700">24/7 Dispatch active for emergencies</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 9: SCHEDULING CALENDAR -->
+        <section id="page-calendar" class="page-view hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+            
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-8 border border-lime-200 shadow-md flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-4xl text-lime-900">Scheduling Calendar</h1>
+                    <p class="text-stone-600 mt-1">Book new care sessions or manage volunteer availability across the whole year.</p>
+                </div>
+
+                <!-- Toggle Switch: Volunteer View vs Client View -->
+                <div class="flex items-center gap-3 bg-stone-100 p-1.5 rounded-2xl border border-stone-200">
+                    <button id="view-toggle-client" onclick="setCalendarRole('client')" class="px-5 py-2 rounded-xl text-sm transition-all bg-white text-stone-800 shadow-sm">
+                        Client View
+                    </button>
+                    <button id="view-toggle-vol" onclick="setCalendarRole('vol')" class="px-5 py-2 rounded-xl text-sm transition-all text-stone-600 hover:text-stone-800">
+                        Volunteer View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar Container -->
+            <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-md space-y-6">
+                
+                <!-- Month Cycle Bar -->
+                <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+                    <button onclick="changeMonth(-1)" class="p-2 text-stone-600 hover:text-lime-700 hover:bg-lime-50 rounded-xl transition-all">
+                        <img src="32213.png" alt="Previous" class="w-5 h-5 object-contain rotate-180" />
+                    </button>
+
+                    <h2 id="calendar-month-title" class="text-3xl text-stone-800">
+                        October 2026
+                    </h2>
+
+                    <button onclick="changeMonth(1)" class="p-2 text-stone-600 hover:text-lime-700 hover:bg-lime-50 rounded-xl transition-all">
+                        <img src="32213.png" alt="Next" class="w-5 h-5 object-contain" />
+                    </button>
+                </div>
+
+                <!-- Calendar Week Header -->
+                <div class="grid grid-cols-7 gap-2 text-center text-xs text-stone-500 pb-2 border-b border-stone-100">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+
+                <!-- Days Grid -->
+                <div id="calendar-grid" class="grid grid-cols-7 gap-2">
+                    <!-- Days dynamically rendered via JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-lime-200/80 pt-12 pb-8 mt-16 shadow-inner">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            
+            <!-- Footer Top Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Top Left: Website Brand Name Link & Location Block -->
+                <div class="lg:col-span-3 text-center lg:text-left">
+                    <button onclick="navigateTo('home')" class="text-4xl text-lime-800 hover:text-lime-600 transition-colors focus:outline-none">
+                        Eldana
+                    </button>
+                    <p class="text-xs text-stone-500 mt-1">Bridging disparities in senior volunteerism.</p>
+                    <div class="mt-3 inline-block bg-stone-100 border border-stone-300 rounded-md px-3 py-1.5 text-xs text-stone-600">
+                        Location: 5575 Merivale Court, Harrisburg, PA 17112
+                    </div>
+                </div>
+
+                <!-- Centrally: Two Circles (Image Placeholders linking to Sister Sites) -->
+                <div class="lg:col-span-6 flex items-center justify-center gap-8">
+                    
+                    <!-- Sister Site Circle 1 -->
+                    <button onclick="openModal('sister-modal-1')" class="group flex flex-col items-center focus:outline-none">
+                        <div class="w-60 h-60 rounded-full border-2 border-lime-400 flex items-center justify-center glow-hover shadow overflow-hidden relative group-hover:scale-105 transition-all">
+                            <a onclick="navigateTo('home')"> <img src="Emblem on Transparent Background.png" alt="Eldana Care Network" class="w-full h-full object-cover" /> </a>
+                        </div>
+                        <span class="text-xs text-stone-600 mt-2 group-hover:text-lime-700">Eldana Care Network</span>
+                    </button>
+
+                    <!-- Sister Site Circle 2 -->
+                    <button onclick="openModal('sister-modal-2')" class="group flex flex-col items-center focus:outline-none">
+                        <div class="w-60 h-60 rounded-full border-2 border-lime-300 flex items-center justify-center glow-hover shadow overflow-hidden relative group-hover:scale-105 transition-all">
+                            <a href="eldana-research.org"><img src="unnamed.png" alt="Eldana | Research" class="w-full h-full object-cover" /></a>
+                        </div>
+                        <span class="text-xs text-stone-600 mt-2 group-hover:text-lime-700">Eldana | Research</span>
+                    </button>
+                </div>
+
+                <!-- Top Right: Social Media Cards & EIN Block -->
+                <div class="lg:col-span-3 flex flex-col items-center lg:items-end gap-3">
+                    <div class="flex items-center gap-3">
+                        <a href="#" onclick="showToast('Redirecting to Facebook...')" class="w-12 h-12 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-700 hover:text-lime-700 hover:border-lime-400 glow-hover shadow-sm">
+                            <img src="images.png" alt="Facebook" class="w-6 h-6 object-contain" />
+                        </a>
+                        <a href="#" onclick="showToast('Redirecting to Instagram...')" class="w-12 h-12 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-700 hover:text-lime-700 hover:border-lime-400 glow-hover shadow-sm">
+                            <img src="Instagram_icon.png" alt="Instagram" class="w-6 h-6 object-contain" />
+                        </a>
+                        <a href="#" onclick="showToast('Redirecting to LinkedIn...')" class="w-12 h-12 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-700 hover:text-lime-700 hover:border-lime-400 glow-hover shadow-sm">
+                            <img src="Linkedin.png" alt="LinkedIn" class="w-6 h-6 object-contain" />
+                        </a>
+                        <a href="#" onclick="showToast('Redirecting to X / Twitter...')" class="w-12 h-12 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-700 hover:text-lime-700 hover:border-lime-400 glow-hover shadow-sm">
+                            <img src="1384060.png" alt="X / Twitter" class="w-6 h-6 object-contain" />
+                        </a>
+                    </div>
+                    <div class="bg-stone-100 border border-stone-300 rounded-md px-3 py-1.5 text-xs text-stone-600">
+                        EIN: 39-2750994
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links Menu -->
+            <div class="flex flex-wrap justify-center gap-6 border-t border-stone-100 pt-8 text-sm text-stone-600">
+                <button onclick="navigateTo('home')" class="hover:text-lime-700">Home</button>
+                <button onclick="navigateTo('about')" class="hover:text-lime-700">About Us</button>
+                <button onclick="navigateTo('donate')" class="hover:text-lime-700">Donate</button>
+                <button onclick="navigateTo('staff')" class="hover:text-lime-700">Staff</button>
+                <button onclick="navigateTo('map')" class="hover:text-lime-700">Interactive Map</button>
+                <button onclick="navigateTo('volunteer')" class="hover:text-lime-700">Volunteer</button>
+                <button onclick="navigateTo('client')" class="hover:text-lime-700">Client</button>
+                <button onclick="navigateTo('contact')" class="hover:text-lime-700">Contact Us</button>
+                <button onclick="navigateTo('calendar')" class="hover:text-lime-700">Book Now</button>
+            </div>
+
+            <!-- Very Bottom Copyright -->
+            <div class="text-center text-xs text-stone-500 border-t border-stone-100 pt-6">
+                © 2026 By Eldana. All Rights Reserved. 
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: STAFF BIO MODAL -->
+    <div id="staff-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-8 space-y-6 shadow-2xl border border-lime-200 relative">
+            <button onclick="closeModal('staff-modal')" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-xl z-10">
+                <img src="x.png" alt="Exit" class="w-5 h-5 object-contain" />
+            </button>
+            <div class="flex flex-col items-center text-center space-y-4">
+                <div id="modal-staff-img" class="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl border-2 border-lime-300 overflow-hidden shadow-md flex-shrink-0">
+                    <img src="1.png" alt="Staff Image" class="w-full h-full object-cover" />
+                </div>
+                <div>
+                    <h3 id="modal-staff-name" class="text-3xl text-stone-800">Staff Name</h3>
+                    <p id="modal-staff-title" class="text-sm bg-lime-100 text-lime-800 inline-block px-3 py-1 rounded-full border border-lime-300 mt-2">Title</p>
+                </div>
+            </div>
+            <p id="modal-staff-bio" class="text-stone-600 leading-relaxed text-base text-center">
+                Full biography text goes here...
+            </p>
+            <div class="flex justify-center pt-2">
+                <img src="Emblem on Transparent Background.png" alt="Emblem" class="w-12 h-12 object-contain" />
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PROFESSIONAL VOLUNTEER CERTIFICATE MODAL -->
+    <div id="cert-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-8 space-y-6 shadow-2xl border-4 border-lime-400 relative text-center">
+            <button onclick="closeModal('cert-modal')" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-xl">
+                <img src="x.png" alt="Exit" class="w-5 h-5 object-contain" />
+            </button>
+            
+            <div class="border-2 border-dashed border-lime-300 p-8 rounded-2xl space-y-6 bg-gradient-to-b from-lime-50/50 to-white">
+                <div class="text-4xl text-lime-800">Certificate of Excellence</div>
+                <div class="text-stone-500 text-sm tracking-widest uppercase">This is officially awarded to</div>
+                <div class="text-3xl text-stone-900 border-b-2 border-stone-300 pb-2 max-w-md mx-auto">Phat Nguyen</div>
+                <p class="text-stone-600 text-sm max-w-md mx-auto">
+                    In recognition of outstanding dedication, compassionate elderly care service, and <strong>142 Hours</strong> of community accessibility volunteering.
+                </p>
+
+                <!-- Pie Chart SVG inside Certificate -->
+                <div class="flex items-center justify-center gap-6 py-2">
+                    <div class="w-32 h-32 relative">
+                        <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+                            <path stroke-dasharray="35, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#65a30d" stroke-width="4" />
+                            <path stroke-dasharray="25, 100" stroke-dashoffset="-35" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#a3e635" stroke-width="4" />
+                            <path stroke-dasharray="20, 100" stroke-dashoffset="-60" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#44403c" stroke-width="4" />
+                            <path stroke-dasharray="20, 100" stroke-dashoffset="-80" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f59e0b" stroke-width="4" />
+                        </svg>
+                    </div>
+                    <div class="text-left text-xs space-y-1 text-stone-600">
+                        <div><span class="inline-block w-2.5 h-2.5 bg-lime-700 mr-1 rounded-full"></span> Rides: 35%</div>
+                        <div><span class="inline-block w-2.5 h-2.5 bg-lime-400 mr-1 rounded-full"></span> Grocery: 25%</div>
+                        <div><span class="inline-block w-2.5 h-2.5 bg-stone-700 mr-1 rounded-full"></span> Companionship: 20%</div>
+                        <div><span class="inline-block w-2.5 h-2.5 bg-amber-500 mr-1 rounded-full"></span> Tech: 20%</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-stone-500 pt-4 border-t border-stone-200">
+                    <div>Issued: October 2026</div>
+                    <div class="flex items-center gap-1 text-lime-800">
+                        <span>Official Eldana Seal</span>
+                    </div>
+                    <div>ID: ELD-99823-PA</div>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="window.print()" class="flex-1 bg-stone-800 text-white py-2.5 rounded-xl hover:bg-stone-900 transition-all">
+                     Print / Save Certificate
+                </button>
+                <button onclick="closeModal('cert-modal')" class="flex-1 bg-lime-500 text-white py-2.5 rounded-xl hover:bg-lime-600 transition-all">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: SISTER SITES MODAL 1 -->
+    <div id="sister-modal-1" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 space-y-4 shadow-2xl border border-lime-200 text-center relative">
+            <button onclick="closeModal('sister-modal-1')" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-xl">
+                <img src="x.png" alt="Exit" class="w-5 h-5 object-contain" />
+            </button>
+            <div class="w-16 h-16 rounded-full overflow-hidden mx-auto border border-lime-300">
+                <img src="Emblem on Transparent Background.png" alt="Sister Site" class="w-full h-full object-cover" />
+            </div>
+            <h3 class="text-2xl text-stone-800">Eldana</h3>
+            <p class="text-stone-600 text-sm">
+                Our parent platform dedicated to providing personalized and accessible care. 
+            </p>
+            <button onclick="closeModal('sister-modal-1')" class="w-full bg-lime-500 text-white py-2.5 rounded-xl hover:bg-lime-600 transition-all">
+                Visit Parent Platform
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 4: SISTER SITES MODAL 2 -->
+    <div id="sister-modal-2" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 space-y-4 shadow-2xl border border-lime-200 text-center relative">
+            <button onclick="closeModal('sister-modal-2')" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-xl">
+                <img src="x.png" alt="Exit" class="w-5 h-5 object-contain" />
+            </button>
+            <div class="w-16 h-16 rounded-full overflow-hidden mx-auto border border-stone-300">
+                <img src="unnamed.png" alt="Foundation Site" class="w-full h-full object-cover" />
+            </div>
+            <h3 class="text-2xl text-stone-800">Eldana | Research</h3>
+            <p class="text-stone-600 text-sm">
+                A non-profit foundation providing grants for home ramps, technological devices, and hearing aids for low-income senior citizens.
+            </p>
+            <button onclick="closeModal('sister-modal-2')" class="w-full bg-lime-500 text-white py-2.5 rounded-xl hover:bg-lime-600 transition-all">
+                Visit Foundation Site
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 5: PARTNER MODAL -->
+    <div id="partner-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 space-y-4 shadow-2xl border border-lime-200 text-center relative">
+            <button onclick="closeModal('partner-modal')" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-xl">
+                <img src="x.png" alt="Exit" class="w-5 h-5 object-contain" />
+            </button>
+            <div class="w-16 h-16 rounded-full overflow-hidden mx-auto border border-lime-300">
+                <img src="unnamed.png" alt="Strategic Alliance" class="w-full h-full object-cover" />
+            </div>
+            <h3 class="text-2xl text-stone-800">Visit Eldana | Research</h3>
+            <p class="text-stone-600 text-sm">
+                Browse a library of 460+ resources including an original interactive brain map, anatomical models, open-access materials, courses, atlases, simulations, and databases.
+            </p>
+            <button onclick="closeModal('partner-modal'); window.location.href='eldana-research.org';" class="w-full bg-lime-500 text-white py-2.5 rounded-xl hover:bg-lime-600 transition-all">
+                Visit Eldana | Research 
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 6: BOOKING DAY MODAL -->
+    <div id="booking-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 space-y-4 shadow-2xl border border-lime-200 relative">
+            <button onclick="closeModal('booking-modal')" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-xl">
+                <img src="x.png" alt="Exit" class="w-5 h-5 object-contain" />
+            </button>
+            <h3 class="text-2xl text-stone-800" id="booking-modal-date">Schedule Appointment</h3>
+            <p class="text-stone-600 text-sm" id="booking-modal-role-text">Select care service needed:</p>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-stone-600 mb-1">Service Type</label>
+                    <select class="w-full p-2.5 rounded-xl border border-stone-300 bg-stone-50">
+                        <option>Grocery & Supplies Delivery</option>
+                        <option>Medical Escort / Ride</option>
+                        <option>Companionship Visit</option>
+                        <option>Tech Assistance</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-stone-600 mb-1">Preferred Time Slot</label>
+                    <select class="w-full p-2.5 rounded-xl border border-stone-300 bg-stone-50">
+                        <option>Morning (9:00 AM - 12:00 PM)</option>
+                        <option>Afternoon (1:00 PM - 4:00 PM)</option>
+                        <option>Evening (5:00 PM - 7:00 PM)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="confirmAppointment()" class="w-full bg-lime-500 text-white py-3 rounded-xl shadow hover:bg-lime-600 transition-all mt-4">
+                Confirm & Schedule
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 pointer-events-none space-y-2"></div>
+
+    <script>
+        let currentPage = 'home';
+        let currentMonth = 9; // 0-indexed: 9 = October
+        let currentYear = 2026;
+        let calendarRole = 'client'; // 'client' or 'vol'
+        let leafletMap = null;
+        let mapMarkers = [];
+
+        // Staff Data - Exactly 6 Profiles with images through 6.png
+        const staffData = [
+            { name: "Phat Nguyen", title: "Co-Founder & CEO", bio: "Phat Nguyen is the co-founder and CEO of Eldana. He is a Schreyer honors scholar, studying integrative science at Penn State Harrisubrg and completing a master of public health at the Penn State College of Medicine.", image: "headshot.jpg" },
+            { name: "Vedant Patel", title: " Co-Founder & Director of Training", bio: "Vedant is a co-founder of Eldana, overseeing all volunteer training. He is a Schreyer honors scholar, studying mechanical engineering at Penn State University.", image: "IMG_8316.jpeg" },
+            { name: "Emily Kiefer", title: "Secretary", bio: "Emily is the secretary of Eldana. She is a Schreyer honors scholar studying biobehavioral health at Penn State Harrisburg and completing a masters of publish health at the Penn State College of Medicine.", image: "IMG_0713.JPG" },
+            { name: "Bob Moreland", title: "Auditor, Lead Researcher", bio: "Bob Moreland is the auditor and lead reserach for Eldana. He is a STAT 1000 teacher at Central Dauphin High School, overseeing the study advisory board, patriciaption in the National DataJam, and six sigma courses.", image: "image.png" },
+            { name: "Miller Habib", title: "Co-Director of Research, Graphic Designer", bio: "Miller is the co-director of Eldana | Research as well as a the front-end developer and graphic designer for Eldana. He is studying Neuroscience at the University of Pennsylvania.", image: "IMG_2148.jpg" },
+            { name: "Khoa Ngo", title: "Student Manager", bio: "Khoa is a senior at Central Dauphin High School; he manages the youth advisory board and directs fundraising efforts alongside manging students in the six sigma programs.", image: "IMG_6524.JPG" }
+        ];
+
+        // Carousel Data
+        const carouselSlides = [
+            { image: "happy-nurse-holding-laughing-elderly-man-hand-wheelchair-garden-nursing-home.jpg", alt: "Eldana in Action - Image 1" },
+            { image: "happy-nurse-take-care-elderly-man-wheelchair-garden-nursing-home.jpg", alt: "Eldana in Action - Image 2" },
+            { image: "happy-nurse-holding-elderly-man-hands-with-blanket-bedroom-nursing-home.jpg", alt: "Eldana in Action - Image 3" },
+            { image: "nurse-assist-elderly-senior-man-eat-breakfast-drink-coffee-with-mug-hand-nursing-home.jpg", alt: "Eldana in Action - Image 4" }
+        ];
+        let currentSlideIndex = 0;
+        let autoplayInterval = null;
+        let isAutoplay = true;
+
+        function navigateTo(pageId) {
+            currentPage = pageId;
+            
+            // Hide all pages
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            
+            // Show target page
+            const target = document.getElementById('page-' + pageId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            // Apply shifting gradient background to non-home pages
+            if (pageId === 'home') {
+                document.body.classList.remove('shifting-bg');
+            } else {
+                document.body.classList.add('shifting-bg');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Initialize page specific items
+            if (pageId === 'map') {
+                setTimeout(initLeafletMap, 100);
+            } else if (pageId === 'calendar') {
+                renderCalendar();
+            }
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-stone-800 text-white text-xs px-4 py-3 rounded-xl shadow-lg border border-lime-400 pointer-events-auto flex items-center gap-2 transition-all duration-300 transform translate-y-2';
+            toast.innerHTML = msg;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function updateCarouselView() {
+            const slide = carouselSlides[currentSlideIndex];
+            const content = document.getElementById('carousel-slide-content');
+            const counter = document.getElementById('carousel-counter');
+            
+            if (!content) return;
+
+            content.style.opacity = 0;
+            setTimeout(() => {
+                content.innerHTML = `
+                    <img src="${slide.image}" alt="${slide.alt}" class="w-full h-full object-cover rounded-2xl" />
+                `;
+                content.style.opacity = 1;
+            }, 200);
+
+            if (counter) {
+                counter.innerText = `Image ${currentSlideIndex + 1} of 4`;
+            }
+
+            // Render Dots
+            const dotsContainer = document.getElementById('carousel-dots');
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+                carouselSlides.forEach((_, idx) => {
+                    const dot = document.createElement('button');
+                    dot.className = `w-3 h-3 rounded-full transition-all ${idx === currentSlideIndex ? 'bg-lime-600 w-6' : 'bg-stone-300'}`;
+                    dot.onclick = () => { currentSlideIndex = idx; updateCarouselView(); };
+                    dotsContainer.appendChild(dot);
+                });
+            }
+        }
+
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % carouselSlides.length;
+            updateCarouselView();
+        }
+
+        function prevSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + carouselSlides.length) % carouselSlides.length;
+            updateCarouselView();
+        }
+
+        function toggleAutoplay() {
+            const btn = document.getElementById('autoplay-btn');
+            isAutoplay = !isAutoplay;
+            if (isAutoplay) {
+                btn.innerHTML = '<img src="pause.png" alt="Pause" class="w-4 h-4 object-contain" /> Auto-Play Active';
+                startAutoplay();
+            } else {
+                btn.innerHTML = '<img src="play.png" alt="Play" class="w-4 h-4 object-contain" /> Auto-Play Paused';
+                clearInterval(autoplayInterval);
+            }
+        }
+
+        function startAutoplay() {
+            clearInterval(autoplayInterval);
+            autoplayInterval = setInterval(nextSlide, 4500);
+        }
+
+        function renderStaffGrid() {
+            const container = document.getElementById('staff-grid');
+            if (!container) return;
+
+            container.innerHTML = staffData.map((staff, idx) => `
+                <div class="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm hover:border-lime-400 glow-hover flex flex-col items-center text-center space-y-5">
+                    <div class="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl border-2 border-lime-300 overflow-hidden shadow-md flex-shrink-0">
+                        <img src="${staff.image}" alt="${staff.name}" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-2xl text-stone-800 font-medium">${staff.name}</h3>
+                        <p class="text-xs text-lime-800 bg-lime-100 px-3 py-1 rounded-full border border-lime-300 inline-block mt-2">${staff.title}</p>
+                    </div>
+                    <button onclick="openStaffModal(${idx})" class="w-full text-sm border border-lime-500 text-lime-800 hover:bg-lime-500 hover:text-white py-2.5 rounded-xl transition-all">
+                        View Full Biography
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function openStaffModal(idx) {
+            const staff = staffData[idx];
+            document.getElementById('modal-staff-name').innerText = staff.name;
+            document.getElementById('modal-staff-title').innerText = staff.title;
+            document.getElementById('modal-staff-bio').innerText = staff.bio;
+            document.getElementById('modal-staff-img').querySelector('img').src = staff.image;
+            openModal('staff-modal');
+        }
+
+        function initLeafletMap() {
+            if (leafletMap) {
+                leafletMap.invalidateSize();
+                return;
+            }
+
+            // Centered near Philadelphia
+            leafletMap = L.map('leaflet-map').setView([39.9526, -75.1652], 12);
+
+            // Esri World Imagery Satellite Tiles
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                maxZoom: 18
+            }).addTo(leafletMap);
+
+            updateMapMarkers();
+        }
+
+        function updateMapMarkers() {
+            if (!leafletMap) return;
+
+            // Clear existing
+            mapMarkers.forEach(m => leafletMap.removeLayer(m));
+            mapMarkers = [];
+
+            const showVol = document.getElementById('toggle-volunteers').checked;
+            const showClient = document.getElementById('toggle-clients').checked;
+            const showChap = document.getElementById('toggle-chapters').checked;
+
+            const sampleLocations = [
+                { type: 'vol', lat: 39.955, lng: -75.160, title: "Volunteer: Phat Nguyen", desc: "Available for Grocery & Transportation" },
+                { type: 'vol', lat: 39.948, lng: -75.175, title: "Volunteer: Marcus Vance", desc: "Available for Companionship & Reading" },
+                { type: 'vol', lat: 39.962, lng: -75.150, title: "Volunteer: David Chen", desc: "Available for Tech Mentorship" },
+                { type: 'client', lat: 39.940, lng: -75.168, title: "Client: Eleanor Vance", desc: "Requested Assistance: Doctor Escort" },
+                { type: 'client', lat: 39.958, lng: -75.180, title: "Client: Arthur Pendelton", desc: "Requested Assistance: Weekly Grocery" },
+                { type: 'client', lat: 39.932, lng: -75.155, title: "Client: Clara Higgins", desc: "Requested Assistance: Tech Support" },
+                { type: 'chap', lat: 39.9526, lng: -75.1652, title: "Eldana HQ Chapter", desc: "1200 Market St - Regional Dispatch Center" },
+                { type: 'chap', lat: 39.980, lng: -75.140, title: "North Philly Chapter", desc: "Community Hub & Resource Center" }
+            ];
+
+            sampleLocations.forEach(loc => {
+                if ((loc.type === 'vol' && !showVol) || 
+                    (loc.type === 'client' && !showClient) || 
+                    (loc.type === 'chap' && !showChap)) return;
+
+                let color = loc.type === 'vol' ? '#84cc16' : (loc.type === 'client' ? '#f59e0b' : '#047857');
+                
+                const circle = L.circleMarker([loc.lat, loc.lng], {
+                    radius: 10,
+                    fillColor: color,
+                    color: '#ffffff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.9
+                }).addTo(leafletMap);
+
+                circle.bindPopup(`
+                    <div style="font-family: 'Libre Baskerville', serif;">
+                        <strong style="color: ${color};">${loc.title}</strong><br>
+                        <span style="font-size: 12px; color: #444;">${loc.desc}</span>
+                    </div>
+                `);
+
+                mapMarkers.push(circle);
+            });
+        }
+
+        function switchVolTab(tab) {
+            document.querySelectorAll('.vol-subpage').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('#page-volunteer .tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('vol-sub-' + tab).classList.remove('hidden');
+            document.getElementById('vol-tab-' + tab).classList.add('active');
+        }
+
+        function switchClientTab(tab) {
+            document.querySelectorAll('.client-subpage').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('#page-client .tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('client-sub-' + tab).classList.remove('hidden');
+            document.getElementById('client-tab-' + tab).classList.add('active');
+        }
+
+        function generateCertificate() {
+            openModal('cert-modal');
+        }
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        function setCalendarRole(role) {
+            calendarRole = role;
+            document.getElementById('view-toggle-client').className = `px-5 py-2 rounded-xl text-sm transition-all ${role === 'client' ? 'bg-white text-stone-800 shadow-sm' : 'text-stone-600 hover:text-stone-800'}`;
+            document.getElementById('view-toggle-vol').className = `px-5 py-2 rounded-xl text-sm transition-all ${role === 'vol' ? 'bg-white text-stone-800 shadow-sm' : 'text-stone-600 hover:text-stone-800'}`;
+            renderCalendar();
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const title = document.getElementById('calendar-month-title');
+            const grid = document.getElementById('calendar-grid');
+            if (!title || !grid) return;
+
+            title.innerText = `${monthNames[currentMonth]} ${currentYear}`;
+            grid.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Blank padding cells
+            for (let i = 0; i < firstDay; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'h-24 bg-stone-50/40 rounded-2xl border border-stone-100';
+                grid.appendChild(empty);
+            }
+
+            // Active Days
+            for (let day = 1; day <= totalDays; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'h-24 bg-white rounded-2xl border border-stone-200 p-2 flex flex-col justify-between hover:border-lime-400 glow-hover cursor-pointer transition-all';
+                
+                let hasEvent = (day % 4 === 0 || day % 7 === 0);
+                let badge = '';
+
+                if (hasEvent) {
+                    badge = calendarRole === 'client' 
+                        ? `<span class="bg-lime-100 text-lime-800 text-[10px] p-1 rounded border border-lime-300 truncate">Visit Confirmed</span>`
+                        : `<span class="bg-amber-100 text-amber-800 text-[10px] p-1 rounded border border-amber-300 truncate">Shift Open</span>`;
+                }
+
+                cell.innerHTML = `
+                    <div class="text-xs text-stone-500 flex justify-between">
+                        <span>${day}</span>
+                    </div>
+                    <div>${badge}</div>
+                `;
+
+                cell.onclick = () => openBookingModal(day);
+                grid.appendChild(cell);
+            }
+        }
+
+        function openBookingModal(day) {
+            document.getElementById('booking-modal-date').innerText = `Schedule for ${monthNames[currentMonth]} ${day}, ${currentYear}`;
+            document.getElementById('booking-modal-role-text').innerText = calendarRole === 'client' 
+                ? "Select accessibility support required:" 
+                : "Select open volunteer slot to claim:";
+            openModal('booking-modal');
+        }
+
+        function confirmAppointment() {
+            closeModal('booking-modal');
+            showToast('Appointment scheduled successfully!');
+        }
+
+        let donationFreq = 'once';
+        let donationAmount = 50;
+
+        function setDonationFreq(freq) {
+            donationFreq = freq;
+            document.getElementById('freq-once').className = `flex-1 py-2 rounded-lg text-sm transition-all ${freq === 'once' ? 'bg-white shadow-sm text-stone-800' : 'text-stone-600 hover:text-stone-800'}`;
+            document.getElementById('freq-monthly').className = `flex-1 py-2 rounded-lg text-sm transition-all ${freq === 'monthly' ? 'bg-white shadow-sm text-stone-800' : 'text-stone-600 hover:text-stone-800'}`;
+            updateDonationTotal();
+        }
+
+        function setDonationAmount(amt) {
+            donationAmount = amt;
+            document.getElementById('custom-donation').value = amt;
+            updateDonationTotal();
+        }
+
+        function updateDonationTotal() {
+            const val = parseFloat(document.getElementById('custom-donation').value) || 0;
+            donationAmount = val;
+            document.getElementById('btn-donation-amount').innerText = `$${val.toFixed(2)}${donationFreq === 'monthly' ? '/mo' : ''}`;
+            
+            // Highlight the selected payment amount button and reset non-selected buttons
+            const btns = document.querySelectorAll('.amount-btn');
+            btns.forEach(btn => {
+                const btnAmt = parseFloat(btn.innerText.replace('$', ''));
+                if (btnAmt === val) {
+                    btn.className = 'amount-btn bg-lime-500 text-white border border-lime-600 py-3 rounded-xl text-center transition-all shadow';
+                } else {
+                    btn.className = 'amount-btn bg-stone-50 hover:bg-lime-100 border border-stone-200 py-3 rounded-xl text-center text-stone-800 transition-all focus:border-lime-500';
+                }
+            });
+
+            const impactLabel = document.getElementById('impact-label');
+            const impactBar = document.getElementById('impact-bar');
+            
+            if (val < 25) {
+                impactLabel.innerText = "2 Prescription Deliveries & Wellness Check";
+                impactBar.style.width = "25%";
+            } else if (val < 75) {
+                impactLabel.innerText = "5 Grocery Delivery Rides & 2 Companion Hours";
+                impactBar.style.width = "65%";
+            } else {
+                impactLabel.innerText = "Full Month Mobility Escorts & Tech Mentorship";
+                impactBar.style.width = "100%";
+            }
+        }
+
+        function processDonation() {
+            showToast(`Thank you! Your donation of $${donationAmount.toFixed(2)} has been processed.`);
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            showToast('Your message has been received! Our team will respond within 24 hours.');
+            e.target.reset();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        window.onload = function() {
+            renderStaffGrid();
+            updateCarouselView();
+            startAutoplay();
+            renderCalendar();
+        };
+    </script>
+
+
+    <script src="map_frontend.js"></script>
+</body>
+</html>

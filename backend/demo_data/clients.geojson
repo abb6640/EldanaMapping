@@ -1,0 +1,10 @@
+{
+  "type": "FeatureCollection",
+  "name": "EldanaMapping hackathon clients",
+  "features": [
+    {"type":"Feature","id":"cli-001","geometry":{"type":"Point","coordinates":[-75.168,39.940]},"properties":{"layer":"client","title":"Client: Eleanor","name":"Eleanor Vance","address":"South Philadelphia","needs":["ride","medication"],"schedule":{"tuesday":["afternoon"],"thursday":["morning"]},"request":"Doctor escort with wheelchair-accessible transportation."}},
+    {"type":"Feature","id":"cli-002","geometry":{"type":"Point","coordinates":[-75.180,39.958]},"properties":{"layer":"client","title":"Client: Arthur","name":"Arthur Pendelton","address":"West Philadelphia","needs":["grocery","companionship"],"schedule":{"monday":["morning"],"saturday":["morning"]},"request":"Weekly groceries and a friendly check-in."}},
+    {"type":"Feature","id":"cli-003","geometry":{"type":"Point","coordinates":[-75.155,39.932]},"properties":{"layer":"client","title":"Client: Clara","name":"Clara Higgins","address":"Queen Village","needs":["tech","organizing"],"schedule":{"monday":["morning"],"thursday":["morning"]},"request":"Set up video calls and organize important contacts."}},
+    {"type":"Feature","id":"cli-004","geometry":{"type":"Point","coordinates":[-75.140,39.980]},"properties":{"layer":"client","title":"Client: Robert","name":"Robert Ellis","address":"North Philadelphia","needs":["meal","cleaning"],"schedule":{"friday":["afternoon"],"saturday":["morning"]},"request":"Prepare simple meals and tidy the kitchen."}}
+  ]
+}

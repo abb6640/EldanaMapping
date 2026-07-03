@@ -1,37 +1,26 @@
 # EldanaMapping
 
-EldanaMapping is a collaborative map for turning local knowledge into actionable community projects. It helps a team collect places, stories, needs, and opportunities, then organize them into hackathon-ready initiatives.
+This hackathon repository is an independent copy of the Eldana website and its FastAPI/SQLite coordination backend. The original `Eldana-Website` workspace remains separate and is not modified by work in this repository.
 
-## Why it exists
-
-Good civic ideas are often scattered across conversations, spreadsheets, and disconnected maps. EldanaMapping gives a team one calm workspace for discovering context, shaping proposals, and sharing a clear next step.
-
-## Product pillars
-
-- **Explore** a living map of community signals.
-- **Understand** the people, places, and needs behind each signal.
-- **Shape** promising signals into structured project briefs.
-- **Share** a concise story with teammates and partners.
-
-## Development
-
-The application is intentionally dependency-light: a Python standard-library API serves a browser-native frontend. Run the local server with:
+## Run the copied app
 
 ```powershell
-python -m app
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
-Then open `http://127.0.0.1:8000`.
+Then open `frontend/Eldana.html` with Live Server. The interactive map uses the same coordinate system as the copied Eldana app and loads its map markers from the API.
 
-## Volunteer matching data
+## Hackathon map data
 
-The combined map reads two GeoJSON layers from `data/`:
+`backend/demo_data/volunteers.geojson` and `backend/demo_data/clients.geojson` contain synthetic demo records for the map. Each volunteer includes an address, useful elder-support skills, and day/shift availability. Each client includes coordinates, a request whose needs match volunteer skills, and preferred day/shift windows.
 
-- `volunteers.geojson` stores each volunteer's address, point coordinates, skills, and available day/shift windows.
-- `clients.geojson` stores each client's address, point coordinates, requested help, and preferred day/shift windows.
+The `/api/map/demo-geojson` endpoint combines both layers into one GeoJSON FeatureCollection. The map keeps volunteers and clients on the same map and shows their skills, needs, addresses, and schedules in the marker popups. The original privacy-preserving `/api/map/geojson` endpoint remains available separately.
 
-The browser matches a client to volunteers when at least one requested skill overlaps and at least one day/shift is available for both people. The map keeps both layers visible together: orange pins represent volunteers and green pins represent clients.
+## Repository layout
 
-## Project status
-
-This is a hackathon foundation designed for rapid iteration. The roadmap lives in `docs/ROADMAP.md` and the architecture notes live in `docs/ARCHITECTURE.md`.
+- `frontend/` — copied Eldana experience, including the Leaflet map.
+- `backend/` — FastAPI API, SQLite seed data, planner, and map routes.
+- `backend/demo_data/` — synthetic hackathon volunteer/client GeoJSON layers.
+- `docs/` — architecture and roadmap notes.
