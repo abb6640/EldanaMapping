@@ -31,8 +31,23 @@ async function updateMapMarkers() {
         const collections = await Promise.all(responses.map(res => res.json()));
         data = { type: "FeatureCollection", features: collections.flatMap(collection => collection.features) };
     } catch (e) {
-        showToast("Could not load the map data. Please try again.");
-        return;
+        // Live Server may be running without the FastAPI process. Use the
+        // synthetic hackathon layer locally so the map remains explorable.
+        try {
+            const localFiles = await Promise.all([
+                layers.includes("vol") ? fetch("demo_data/volunteers.geojson") : null,
+                layers.includes("client") ? fetch("demo_data/clients.geojson") : null
+            ].filter(Boolean));
+            if (localFiles.some(res => !res.ok)) throw new Error("local map data unavailable");
+            const localCollections = await Promise.all(localFiles.map(res => res.json()));
+            data = { type: "FeatureCollection", features: localCollections.flatMap(collection => collection.features) };
+            if (layers.includes("chapter")) {
+                data.features.push({ type: "Feature", geometry: { type: "Point", coordinates: [-75.1652, 39.9526] }, properties: { layer: "chapter", title: "Eldana HQ Chapter", desc: "Regional Dispatch Center" } });
+            }
+        } catch (fallbackError) {
+            showToast("Could not load the map data. Start FastAPI or open frontend/Eldana.html with Live Server.");
+            return;
+        }
     }
 
     const group = L.geoJSON(data, {

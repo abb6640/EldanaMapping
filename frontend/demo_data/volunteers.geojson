@@ -1,0 +1,10 @@
+{
+  "type": "FeatureCollection",
+  "name": "EldanaMapping hackathon volunteers",
+  "features": [
+    {"type":"Feature","id":"vol-001","geometry":{"type":"Point","coordinates":[-75.160,39.955]},"properties":{"layer":"vol","title":"Volunteer: Phat","name":"Phat Nguyen","address":"1200 Market Street","skills":["grocery","ride","companionship"],"availability":{"monday":["morning","afternoon"],"wednesday":["morning"],"friday":["afternoon"]},"vehicle":true}},
+    {"type":"Feature","id":"vol-002","geometry":{"type":"Point","coordinates":[-75.175,39.948]},"properties":{"layer":"vol","title":"Volunteer: Marcus","name":"Marcus Vance","address":"18 Spruce Street","skills":["companionship","ride","grocery","meal"],"availability":{"monday":["morning"],"wednesday":["afternoon","evening"],"saturday":["morning"]},"vehicle":true}},
+    {"type":"Feature","id":"vol-003","geometry":{"type":"Point","coordinates":[-75.150,39.962]},"properties":{"layer":"vol","title":"Volunteer: David","name":"David Chen","address":"421 Arch Street","skills":["tech","companionship","organizing"],"availability":{"monday":["morning"],"tuesday":["afternoon"],"thursday":["morning"]},"vehicle":false}},
+    {"type":"Feature","id":"vol-004","geometry":{"type":"Point","coordinates":[-75.165,39.945]},"properties":{"layer":"vol","title":"Volunteer: Maria","name":"Maria Santos","address":"66 Pine Street","skills":["ride","medication","grocery","cleaning"],"availability":{"tuesday":["morning","afternoon"],"thursday":["morning"],"friday":["afternoon"]},"vehicle":true}}
+  ]
+}
