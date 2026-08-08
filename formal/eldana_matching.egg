@@ -1,0 +1,78 @@
+; EldanaMapping volunteer/client matching model.
+; Run with the egglog CLI:
+;   egglog formal/eldana_matching.egg
+;
+; A match requires both a shared skill/need and the same day + shift.
+
+(relation volunteer (String String String))
+(relation client (String String String))
+(relation volunteer-skill (String String))
+(relation client-need (String String))
+(relation match (String String String String))
+
+; A volunteer is available for a concrete day and shift.
+(volunteer "Marcus Vance" "Wednesday" "6-9 PM")
+(volunteer "Marcus Vance" "Saturday" "9-11 AM")
+(volunteer "Maria Santos" "Thursday" "8-9 AM")
+(volunteer "David Chen" "Thursday" "8-10 AM")
+(volunteer "Aisha Williams" "Saturday" "8-11 AM")
+(volunteer "Ben Ortiz" "Thursday" "6-9 PM")
+(volunteer "Grace Lee" "Sunday" "9-11 AM")
+(volunteer "Omar Davis" "Saturday" "1-4 PM")
+
+; Skills are normalized to the labels used in the GeoJSON demo layer.
+(volunteer-skill "Marcus Vance" "Companionship")
+(volunteer-skill "Marcus Vance" "Grocery Delivery")
+(volunteer-skill "Marcus Vance" "Meal Preparation")
+(volunteer-skill "Maria Santos" "Transportation")
+(volunteer-skill "Maria Santos" "Medication Pickup")
+(volunteer-skill "David Chen" "Tech Support")
+(volunteer-skill "David Chen" "Organizing")
+(volunteer-skill "Aisha Williams" "Yardwork")
+(volunteer-skill "Aisha Williams" "Snow Removal")
+(volunteer-skill "Ben Ortiz" "Meal Preparation")
+(volunteer-skill "Ben Ortiz" "Cleaning")
+(volunteer-skill "Grace Lee" "Mobility Support")
+(volunteer-skill "Grace Lee" "Companionship")
+(volunteer-skill "Omar Davis" "Transportation")
+(volunteer-skill "Omar Davis" "Grocery Delivery")
+
+; Client requests use the same skill vocabulary as volunteers.
+(client "Eleanor Vance" "Tuesday" "1-3 PM")
+(client "Eleanor Vance" "Thursday" "8-9 AM")
+(client "Arthur Pendelton" "Saturday" "9-11 AM")
+(client "Clara Higgins" "Thursday" "8-10 AM")
+(client "Robert Ellis" "Thursday" "6-9 PM")
+(client "June Carter" "Saturday" "8-11 AM")
+(client "Walter Brooks" "Sunday" "9-11 AM")
+(client "Daniel Reed" "Saturday" "1-4 PM")
+
+(client-need "Eleanor Vance" "Medication Pickup")
+(client-need "Eleanor Vance" "Transportation")
+(client-need "Arthur Pendelton" "Companionship")
+(client-need "Arthur Pendelton" "Grocery Delivery")
+(client-need "Clara Higgins" "Tech Support")
+(client-need "Clara Higgins" "Organizing")
+(client-need "Robert Ellis" "Meal Preparation")
+(client-need "Robert Ellis" "Cleaning")
+(client-need "June Carter" "Yardwork")
+(client-need "June Carter" "Snow Removal")
+(client-need "Walter Brooks" "Mobility Support")
+(client-need "Walter Brooks" "Companionship")
+(client-need "Daniel Reed" "Transportation")
+(client-need "Daniel Reed" "Grocery Delivery")
+
+; Join on shared day/shift and then require at least one skill match.
+(rule ((volunteer v day shift) (client c day shift)
+       (volunteer-skill v skill) (client-need c skill))
+      ((match v c day shift)))
+
+(run 10)
+
+; These checks document expected matches in the demo dataset.
+(check (match "Marcus Vance" "Arthur Pendelton" "Saturday" "9-11 AM"))
+(check (match "David Chen" "Clara Higgins" "Thursday" "8-10 AM"))
+(check (match "Ben Ortiz" "Robert Ellis" "Thursday" "6-9 PM"))
+(check (match "Aisha Williams" "June Carter" "Saturday" "8-11 AM"))
+(check (match "Grace Lee" "Walter Brooks" "Sunday" "9-11 AM"))
+(check (match "Omar Davis" "Daniel Reed" "Saturday" "1-4 PM"))
