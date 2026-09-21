@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "name": "EldanaMapping volunteers",
+  "features": [
+    {"type":"Feature","id":"vol-001","geometry":{"type":"Point","coordinates":[-73.982,40.741]},"properties":{"name":"Maya K.","address":"14 Juniper Row","skills":["yardwork","cleaning","companionship"],"availability":{"monday":["morning"],"wednesday":["afternoon"],"saturday":["morning","afternoon"]},"phone":"contact-through-platform","x":70,"y":80}},
+    {"type":"Feature","id":"vol-002","geometry":{"type":"Point","coordinates":[-73.975,40.746]},"properties":{"name":"Jordan R.","address":"88 Eastbank Avenue","skills":["organizing","grocery_delivery","tech_help"],"availability":{"tuesday":["afternoon"],"thursday":["evening"],"sunday":["morning"]},"phone":"contact-through-platform","x":62,"y":52}},
+    {"type":"Feature","id":"vol-003","geometry":{"type":"Point","coordinates":[-73.989,40.737]},"properties":{"name":"Samira T.","address":"5 Cedar Loop","skills":["meal_prep","cleaning","medication_pickup"],"availability":{"monday":["afternoon"],"friday":["morning","afternoon"]},"phone":"contact-through-platform","x":48,"y":73}},
+    {"type":"Feature","id":"vol-004","geometry":{"type":"Point","coordinates":[-73.968,40.752]},"properties":{"name":"Leo P.","address":"112 Old Station Road","skills":["home_repairs","yardwork","snow_removal"],"availability":{"wednesday":["morning"],"saturday":["morning"]},"phone":"contact-through-platform","x":77,"y":29}},
+    {"type":"Feature","id":"vol-005","geometry":{"type":"Point","coordinates":[-73.995,40.739]},"properties":{"name":"Avery C.","address":"31 South Commons","skills":["transportation","companionship","grocery_delivery"],"availability":{"tuesday":["morning","afternoon"],"thursday":["morning"]},"phone":"contact-through-platform","x":20,"y":68}},
+    {"type":"Feature","id":"vol-006","geometry":{"type":"Point","coordinates":[-73.991,40.754]},"properties":{"name":"Noah B.","address":"9 North Market Street","skills":["organizing","tech_help","mobility_support"],"availability":{"monday":["evening"],"sunday":["afternoon"]},"phone":"contact-through-platform","x":28,"y":36}}
+  ]
+}

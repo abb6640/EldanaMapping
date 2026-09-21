@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "name": "EldanaMapping clients",
+  "features": [
+    {"type":"Feature","id":"cli-001","geometry":{"type":"Point","coordinates":[-73.982,40.741]},"properties":{"name":"Helen M.","address":"14 Juniper Row","needs":["yardwork","companionship"],"schedule":{"saturday":["morning"],"monday":["morning"]},"request":"Help keep the front garden safe and welcoming.","x":70,"y":80}},
+    {"type":"Feature","id":"cli-002","geometry":{"type":"Point","coordinates":[-73.975,40.746]},"properties":{"name":"Arthur D.","address":"88 Eastbank Avenue","needs":["organizing","tech_help"],"schedule":{"tuesday":["afternoon"],"thursday":["evening"]},"request":"Sort mail and set up an easier way to video call family.","x":62,"y":52}},
+    {"type":"Feature","id":"cli-003","geometry":{"type":"Point","coordinates":[-73.989,40.737]},"properties":{"name":"Rosa V.","address":"5 Cedar Loop","needs":["meal_prep","medication_pickup"],"schedule":{"monday":["afternoon"],"friday":["morning"]},"request":"Prepare a few simple meals and collect a prescription.","x":48,"y":73}},
+    {"type":"Feature","id":"cli-004","geometry":{"type":"Point","coordinates":[-73.968,40.752]},"properties":{"name":"George L.","address":"112 Old Station Road","needs":["home_repairs","snow_removal"],"schedule":{"wednesday":["morning"],"saturday":["morning"]},"request":"Repair a loose handrail and clear the front path in winter.","x":77,"y":29}},
+    {"type":"Feature","id":"cli-005","geometry":{"type":"Point","coordinates":[-73.995,40.739]},"properties":{"name":"June S.","address":"31 South Commons","needs":["transportation","grocery_delivery"],"schedule":{"tuesday":["morning"],"thursday":["morning"]},"request":"Get to a weekly appointment and bring home groceries.","x":20,"y":68}},
+    {"type":"Feature","id":"cli-006","geometry":{"type":"Point","coordinates":[-73.991,40.754]},"properties":{"name":"Walter P.","address":"9 North Market Street","needs":["mobility_support","cleaning"],"schedule":{"monday":["evening"],"sunday":["afternoon"]},"request":"Tidy the hallway and make the entry safer to navigate.","x":28,"y":36}}
+  ]
+}

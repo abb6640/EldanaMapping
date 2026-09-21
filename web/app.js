@@ -1,27 +1,35 @@
-const signals = [
-  { id: 1, type: "need", title: "A softer landing for new neighbors", place: "North Market", description: "People are looking for an easier way to meet the block." , x: 28, y: 36 },
-  { id: 2, type: "idea", title: "Repair circles, not repair shops", place: "Eastbank", description: "Share tools, skills, and a little more time." , x: 62, y: 52 },
-  { id: 3, type: "need", title: "Shade would change this walk", place: "Cedar Loop", description: "The route is loved, but the summer heat is a barrier." , x: 48, y: 73 },
-  { id: 4, type: "idea", title: "A library of useful things", place: "Old Station", description: "What if borrowing a drill was as easy as borrowing a book?" , x: 77, y: 29 },
-  { id: 5, type: "need", title: "Keep the lights on later", place: "South Commons", description: "An evening bus stop should feel like a place, not a gap." , x: 20, y: 68 },
-  { id: 6, type: "idea", title: "Sidewalk tables, shared stories", place: "Juniper Row", description: "The best third place in the neighborhood is the sidewalk." , x: 70, y: 80 },
-];
-
 const list = document.querySelector("#signal-list");
 const map = document.querySelector("#map-canvas");
 const count = document.querySelector("#signal-count");
+const state = { volunteers: [], clients: [] };
 
-function render(filter = "all") {
-  const visible = filter === "all" ? signals : signals.filter((signal) => signal.type === filter);
-  list.innerHTML = visible.map((signal) => `<article class="signal-item" data-id="${signal.id}"><span class="signal-tag">${signal.type} · ${signal.place}</span><h4>${signal.title}</h4><p>${signal.description}</p></article>`).join("");
-  count.textContent = String(visible.length).padStart(2, "0");
-  map.querySelectorAll(".map-pin").forEach((pin) => pin.remove());
-  visible.forEach((signal) => { const pin = document.createElement("button"); pin.className = "map-pin"; pin.style.left = `${signal.x}%`; pin.style.top = `${signal.y}%`; pin.title = signal.title; pin.addEventListener("click", () => focusSignal(signal.id)); map.appendChild(pin); });
+const label = (value) => value.replaceAll("_", " ");
+const shifts = (schedule) => Object.entries(schedule).map(([day, slots]) => `${day} ${slots.join(" / ")}`).join(" · ");
+const hasOverlap = (volunteer, client) => Object.entries(client.properties.schedule).some(([day, slots]) => (volunteer.properties.availability[day] || []).some((slot) => slots.includes(slot)));
+const matchesFor = (client) => state.volunteers.filter((volunteer) => volunteer.properties.skills.some((skill) => client.properties.needs.includes(skill)) && hasOverlap(volunteer, client));
+
+function volunteerCard(feature) {
+  const props = feature.properties;
+  return `<article class="signal-item person-item volunteer" data-id="${feature.id}"><span class="signal-tag">volunteer · ${props.address}</span><h4>${props.name}</h4><p>Available for ${props.skills.slice(0, 2).map(label).join(" and ")}.</p><div class="skill-row">${props.skills.map((skill) => `<span>${label(skill)}</span>`).join("")}</div><small class="schedule-line">${props.skills.length} skills offered · ${shifts(props.availability)}</small></article>`;
 }
 
-function focusSignal(id) { const item = list.querySelector(`[data-id="${id}"]`); item?.scrollIntoView({ behavior: "smooth", block: "center" }); item?.animate([{ background: "#f6ddcf" }, { background: "transparent" }], { duration: 900 }); }
+function clientCard(feature) {
+  const props = feature.properties;
+  const matches = matchesFor(feature);
+  const matchNames = matches.map((match) => match.properties.name).join(", ");
+  return `<article class="signal-item person-item client" data-id="${feature.id}"><span class="signal-tag">client · ${props.address}</span><h4>${props.name}</h4><p>${props.request}</p><div class="skill-row">${props.needs.map((need) => `<span>${label(need)}</span>`).join("")}</div><small class="schedule-line">${matches.length} matching volunteer${matches.length === 1 ? "" : "s"} · ${shifts(props.schedule)}</small>${matches.length ? `<div class="match-note">Best overlap: ${matchNames}</div>` : '<div class="match-note muted">No exact schedule overlap yet</div>'}</article>`;
+}
 
-document.querySelectorAll(".filter").forEach((button) => button.addEventListener("click", () => { document.querySelector(".filter.active").classList.remove("active"); button.classList.add("active"); render(button.dataset.filter); }));
-document.querySelectorAll('[data-action="new-signal"]').forEach((button) => button.addEventListener("click", () => document.querySelector("#signal-dialog").showModal()));
-document.querySelector("#signal-form").addEventListener("submit", (event) => { const data = new FormData(event.target); signals.unshift({ id: Date.now(), type: data.get("type"), title: data.get("title"), place: data.get("place") || "Just shared", description: data.get("description") || "A new observation from the community.", x: 35 + Math.random() * 35, y: 25 + Math.random() * 50 }); render(document.querySelector(".filter.active").dataset.filter); });
-render();
+function render() {
+  const people = [...state.volunteers.map((feature) => ({ feature, kind: "volunteer" })), ...state.clients.map((feature) => ({ feature, kind: "client" }))];
+  list.innerHTML = people.map(({ feature, kind }) => kind === "volunteer" ? volunteerCard(feature) : clientCard(feature)).join("");
+  count.textContent = String(people.length).padStart(2, "0");
+  map.querySelectorAll(".map-pin").forEach((pin) => pin.remove());
+  people.forEach(({ feature, kind }) => { const pin = document.createElement("button"); pin.className = `map-pin ${kind}-pin`; pin.style.left = `${feature.properties.x}%`; pin.style.top = `${feature.properties.y + (kind === "client" ? 3 : 0)}%`; pin.title = `${feature.properties.name} — ${kind}`; pin.addEventListener("click", () => focusPerson(feature.id)); map.appendChild(pin); });
+}
+
+function focusPerson(id) { const item = list.querySelector(`[data-id="${id}"]`); item?.scrollIntoView({ behavior: "smooth", block: "center" }); item?.animate([{ background: "#f6ddcf" }, { background: "transparent" }], { duration: 900 }); }
+
+async function loadGeoJson() { const [volunteers, clients] = await Promise.all([fetch("../data/volunteers.geojson").then((response) => response.json()), fetch("../data/clients.geojson").then((response) => response.json())]); state.volunteers = volunteers.features; state.clients = clients.features; render(); }
+
+loadGeoJson().catch(() => { list.innerHTML = "<p class='empty-state'>Start the local server to load the volunteer and client GeoJSON layers.</p>"; });
