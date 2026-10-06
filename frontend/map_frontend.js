@@ -9,6 +9,10 @@ function esc(s) {                           // names come from the database, so 
     return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+function formatSchedule(schedule) {
+    return Object.entries(schedule || {}).map(([day, slots]) => `${day} ${slots.join(", ")}`).join("<br>");
+}
+
 async function updateMapMarkers() {
     if (!leafletMap) return;
     mapMarkers.forEach(m => leafletMap.removeLayer(m));
@@ -54,7 +58,7 @@ async function updateMapMarkers() {
         pointToLayer: (f, latlng) => {
             const p = f.properties;
             // client points are density cells (several clients), so size them by count
-            const radius = p.layer === "client" ? Math.min(30, 10 + 3 * p.count) : 10;
+            const radius = p.layer === "client" ? Math.min(30, 10 + 3 * (p.count || 1)) : 10;
             return L.circleMarker(latlng, {
                 radius, fillColor: LAYER_COLORS[p.layer], color: "#ffffff",
                 weight: 2, opacity: 1, fillOpacity: p.layer === "client" ? 0.55 : 0.9
@@ -62,10 +66,9 @@ async function updateMapMarkers() {
         },
         onEachFeature: (f, layer) => {
             const p = f.properties, c = LAYER_COLORS[p.layer];
-            const schedule = p.layer === "client" ? Object.entries(p.schedule || {}).map(([day, slots]) => `${day}: ${slots.join("/")}`).join(" · ")
-                         : Object.entries(p.availability || {}).map(([day, slots]) => `${day}: ${slots.join("/")}`).join(" · ");
-            const detail = p.layer === "client" ? `<strong>Needs:</strong> ${esc((p.needs || []).join(", "))}<br><strong>Schedule:</strong> ${esc(schedule)}<br>${esc(p.request || "")}`
-                         : p.layer === "vol" ? `<strong>Skills:</strong> ${esc((p.skills || []).join(", "))}<br><strong>Address:</strong> ${esc(p.address || "")}<br><strong>Available:</strong> ${esc(schedule)}`
+            const schedule = p.layer === "client" ? formatSchedule(p.schedule) : formatSchedule(p.availability);
+            const detail = p.layer === "client" ? `<strong>Needs:</strong> ${esc((p.needs || []).join(", "))}<br><strong>Address:</strong> ${esc(p.address || "")}<br><strong>Schedule:</strong><br>${schedule}<br><strong>Request:</strong> ${esc(p.request || "")}`
+                         : p.layer === "vol" ? `<strong>Skills:</strong> ${esc((p.skills || []).join(", "))}<br><strong>Address:</strong> ${esc(p.address || "")}<br><strong>Available:</strong><br>${schedule}`
                          : esc(p.desc || "");
             layer.bindPopup(`<div style="font-family:'Libre Baskerville',serif;">
                 <span style="color:${c};">${esc(p.title)}</span><br>
