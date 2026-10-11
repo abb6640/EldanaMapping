@@ -87,4 +87,29 @@ async function updateMapMarkers() {
         }
     }).addTo(leafletMap);
     mapMarkers.push(group);
+
+    // Draw Egglog-derived volunteer/client matches when both layers are visible.
+    if (layers.includes("vol") && layers.includes("client")) {
+        try {
+            const response = await fetch(`${API_BASE}/api/map/demo-matches`);
+            if (!response.ok) throw new Error("match request failed");
+            const result = await response.json();
+            const matchLayer = L.layerGroup();
+            result.matches.forEach(match => {
+                const line = L.polyline([
+                    [match.volunteer_coordinates[1], match.volunteer_coordinates[0]],
+                    [match.client_coordinates[1], match.client_coordinates[0]]
+                ], { color: "#0f766e", weight: 3, opacity: 0.72, dashArray: "7 7" });
+                line.bindTooltip(`<strong>Matched Help Opportunity</strong><br>${esc(match.volunteer)} → ${esc(match.client)}<br>${esc(match.skill)} · ${esc(match.day)} ${esc(match.shift)}`, {
+                    sticky: true,
+                    className: "eldana-match-tooltip"
+                });
+                line.addTo(matchLayer);
+            });
+            matchLayer.addTo(leafletMap);
+            mapMarkers.push(matchLayer);
+        } catch (error) {
+            // Marker data remains usable if the matching endpoint is unavailable.
+        }
+    }
 }

@@ -8,7 +8,7 @@
 (relation client (String String String))
 (relation volunteer-skill (String String))
 (relation client-need (String String))
-(relation match (String String String String))
+(relation match (String String String String String))
 
 ; A volunteer is available for a concrete day and shift.
 (volunteer "Marcus Vance" "Wednesday" "6-9 PM")
@@ -65,14 +65,14 @@
 ; Join on shared day/shift and then require at least one skill match.
 (rule ((volunteer v day shift) (client c day shift)
        (volunteer-skill v skill) (client-need c skill))
-      ((match v c day shift)))
+      ((match v c day shift skill)))
 
 (run 10)
 
 ; These checks document expected matches in the demo dataset.
-(check (match "Marcus Vance" "Arthur Pendelton" "Saturday" "9-11 AM"))
-(check (match "David Chen" "Clara Higgins" "Thursday" "8-10 AM"))
-(check (match "Ben Ortiz" "Robert Ellis" "Thursday" "6-9 PM"))
-(check (match "Aisha Williams" "June Carter" "Saturday" "8-11 AM"))
-(check (match "Grace Lee" "Walter Brooks" "Sunday" "9-11 AM"))
-(check (match "Omar Davis" "Daniel Reed" "Saturday" "1-4 PM"))
+(check (match "Marcus Vance" "Arthur Pendelton" "Saturday" "9-11 AM" "Companionship"))
+(check (match "David Chen" "Clara Higgins" "Thursday" "8-10 AM" "Tech Support"))
+(check (match "Ben Ortiz" "Robert Ellis" "Thursday" "6-9 PM" "Cleaning"))
+(check (match "Aisha Williams" "June Carter" "Saturday" "8-11 AM" "Snow Removal"))
+(check (match "Grace Lee" "Walter Brooks" "Sunday" "9-11 AM" "Mobility Support"))
+(check (match "Omar Davis" "Daniel Reed" "Saturday" "1-4 PM" "Transportation"))

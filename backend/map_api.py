@@ -18,6 +18,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
 from main import SERVICES, db, hard_constraints, haversine, log, now, require_key, vol
+from egglog_engine import match_demo_records
 
 public_router = APIRouter(prefix="/api/map", tags=["map"])
 admin_router = APIRouter(prefix="/api/map/admin", tags=["map (admin)"], dependencies=[Depends(require_key)])
@@ -96,6 +97,13 @@ def demo_geojson(layers: str = "vol,client"):
         with (root / ("volunteers.geojson" if layer == "vol" else "clients.geojson")).open(encoding="utf-8") as handle:
             features.extend(json.load(handle)["features"])
     return fc(features)
+
+
+@public_router.get("/demo-matches")
+def demo_matches():
+    """Return Egglog-derived volunteer/client matches for the hackathon demo."""
+    root = Path(__file__).resolve().parent / "demo_data"
+    return match_demo_records(root)
 
 
 # ---------- admin map (full detail) ----------
