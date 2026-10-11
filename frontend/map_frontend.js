@@ -70,9 +70,20 @@ async function updateMapMarkers() {
             const detail = p.layer === "client" ? `<strong>Needs:</strong> ${esc((p.needs || []).join(", "))}<br><strong>Address:</strong> ${esc(p.address || "")}<br><strong>Schedule:</strong><br>${schedule}<br><strong>Request:</strong> ${esc(p.request || "")}`
                          : p.layer === "vol" ? `<strong>Skills:</strong> ${esc((p.skills || []).join(", "))}<br><strong>Address:</strong> ${esc(p.address || "")}<br><strong>Available:</strong><br>${schedule}`
                          : esc(p.desc || "");
-            layer.bindPopup(`<div style="font-family:'Libre Baskerville',serif;">
+            // Show the complete record on hover so the map can be explored
+            // without requiring a click on small marker targets.
+            layer.bindTooltip(`<div style="font-family:'Libre Baskerville',serif;">
                 <span style="color:${c};">${esc(p.title)}</span><br>
-                <span style="font-size:12px;color:#444;">${detail}</span></div>`);
+                <span style="font-size:12px;color:#444;">${detail}</span></div>`, {
+                direction: "top",
+                sticky: true,
+                opacity: 0.96,
+                className: "eldana-map-tooltip"
+            });
+            layer.on({
+                mouseover: event => event.target.setStyle({ weight: 3, fillOpacity: 1 }),
+                mouseout: event => event.target.setStyle({ weight: 2, fillOpacity: p.layer === "client" ? 0.55 : 0.9 })
+            });
         }
     }).addTo(leafletMap);
     mapMarkers.push(group);
