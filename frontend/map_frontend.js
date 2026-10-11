@@ -13,6 +13,25 @@ function formatSchedule(schedule) {
     return Object.entries(schedule || {}).map(([day, slots]) => `${day} ${slots.join(", ")}`).join("<br>");
 }
 
+function deriveBrowserMatches(features) {
+    const volunteers = features.filter(feature => feature.properties.layer === "vol");
+    const clients = features.filter(feature => feature.properties.layer === "client");
+    const matches = [];
+    volunteers.forEach(volunteer => clients.forEach(client => {
+        const vp = volunteer.properties, cp = client.properties;
+        const sharedSkills = (vp.skills || []).filter(skill => (cp.needs || []).includes(skill));
+        sharedSkills.forEach(skill => Object.entries(vp.availability || {}).forEach(([day, shifts]) => {
+            const clientShifts = cp.schedule?.[day] || [];
+            shifts.filter(shift => clientShifts.includes(shift)).forEach(shift => matches.push({
+                volunteer_id: volunteer.id, volunteer: vp.name, client_id: client.id, client: cp.name,
+                day, shift, skill, volunteer_coordinates: volunteer.geometry.coordinates,
+                client_coordinates: client.geometry.coordinates
+            }));
+        }));
+    }));
+    return matches;
+}
+
 async function updateMapMarkers() {
     if (!leafletMap) return;
     mapMarkers.forEach(m => leafletMap.removeLayer(m));
@@ -90,12 +109,19 @@ async function updateMapMarkers() {
 
     // Draw Egglog-derived volunteer/client matches when both layers are visible.
     if (layers.includes("vol") && layers.includes("client")) {
+        let matches;
         try {
             const response = await fetch(`${API_BASE}/api/map/demo-matches`);
             if (!response.ok) throw new Error("match request failed");
             const result = await response.json();
-            const matchLayer = L.layerGroup();
-            result.matches.forEach(match => {
+            matches = result.matches;
+        } catch (error) {
+            // Live Server can still demonstrate the same relation when FastAPI
+            // is not running; FastAPI/Egglog remains the preferred source.
+            matches = deriveBrowserMatches(data.features);
+        }
+        const matchLayer = L.layerGroup();
+        matches.forEach(match => {
                 const line = L.polyline([
                     [match.volunteer_coordinates[1], match.volunteer_coordinates[0]],
                     [match.client_coordinates[1], match.client_coordinates[0]]
@@ -105,11 +131,8 @@ async function updateMapMarkers() {
                     className: "eldana-match-tooltip"
                 });
                 line.addTo(matchLayer);
-            });
-            matchLayer.addTo(leafletMap);
-            mapMarkers.push(matchLayer);
-        } catch (error) {
-            // Marker data remains usable if the matching endpoint is unavailable.
-        }
+        });
+        matchLayer.addTo(leafletMap);
+        mapMarkers.push(matchLayer);
     }
 }
